@@ -17,14 +17,6 @@ export default new SlashCommand({
             required: true,
         },
         {
-            name: 'skip',
-            nameLocalizations: {
-                pl: 'pominąć',
-            },
-            description: 'Czy pominąć osobną muzykę i zagrać podaną',
-            type: ApplicationCommandOptionType.Boolean,
-        },
-        {
             name: 'next',
             nameLocalizations: {
                 pl: 'następna',
@@ -35,7 +27,6 @@ export default new SlashCommand({
     ],
     run: async ({ interaction }) => {
         const string = interaction.options.getString('song');
-        const skip = interaction.options.getBoolean('skip');
         const position = interaction.options.getBoolean('next') ? 1 : 0;
 
         await interaction.deferReply().catch(err => logger.warn({ message: 'Could not defer reply' }));
@@ -46,7 +37,6 @@ export default new SlashCommand({
         client.distube.play(member.voice.channel, string, {
             member,
             position,
-            skip,
             textChannel: interaction.channel,
         })
         .catch(err => {

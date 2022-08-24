@@ -9,7 +9,7 @@ export default new SlashCommand({
         const queue = client.distube.getQueue(interaction.guildId);
         if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!' }).catch(err => logger.warn({ message: 'could not reply' }));
 
-        queue.songs = []; // EZ clap
+        queue.songs = [queue.songs[0]];
 
         interaction.reply({ content: 'Wyczyszczono całą kolejkę!' }).catch(err => logger.warn({ message: 'could not reply' }));      
     },
