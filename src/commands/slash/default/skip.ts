@@ -34,7 +34,7 @@ export default new SlashCommand({
                         .catch(err => logger.warn({ message: 'could not ' }));
                 });
         } else {
-            if (num < 1 || num) return interaction.reply({ content: 'Piosenka z takim numerem nie może istnieć', }).catch(err => logger.warn({ message: 'could not reply' }));
+            if (num < 1) return interaction.reply({ content: 'Piosenka z takim numerem nie może istnieć', }).catch(err => logger.warn({ message: 'could not reply' }));
             if (num > queue.songs.length) return interaction.reply({ content: 'Nie ma piosenki z takim numerem na kolejce', }).catch(err => logger.warn({ message: 'could not reply' }));
 
             client.distube.jump(interaction.guildId, num).then((song) => {
