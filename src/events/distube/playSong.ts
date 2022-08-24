@@ -6,8 +6,6 @@ export default new DistubeEvent(
     async (queue, song) => {
         const songsLeft = queue.songs.length - 1;
 
-        const interaction = client.interactionShared.get(queue.id);
-
         let pozostalo: string, piosenek: string;
         if (songsLeft === 1) {
             pozostalo = 'Pozostała';
@@ -22,7 +20,7 @@ export default new DistubeEvent(
             piosenek = 'piosenek';
         }
 
-        interaction.followUp({
+        queue.textChannel.send({
             embeds: [{
                 title: 'Teraz gra',
                 description: `${song.name} - ${song.uploader.name}\n(dodane przez: <@${song.user.id}>)`,
@@ -32,7 +30,7 @@ export default new DistubeEvent(
                 },
             }],
         }).catch(err => {
-            logger.warn({ message: 'Could not edit reply', });
+            logger.warn({ message: 'Could not send message', });
         });
     }
 );
