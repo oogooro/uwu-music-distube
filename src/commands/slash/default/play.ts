@@ -51,8 +51,8 @@ export default new SlashCommand({
         })
         .catch(err => {
             logger.error({ err, message: 'bruh', });
-            return interaction.reply({ content: 'Coś poszło nie tak i nie można zagrać muzyki', })
-            .catch(() => logger.warn({ message: 'Could not reply', silent: true, }));
+            return interaction.editReply({ content: 'Coś poszło nie tak i nie można zagrać muzyki', })
+                .catch(() => logger.warn({ message: 'Could not reply', }));
         });
     },
 });
