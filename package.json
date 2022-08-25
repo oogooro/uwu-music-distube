@@ -4,16 +4,14 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start:dev": "environment=\"dev\" ts-node src/index.ts",
-    "start:prod": "npm run build; environment=\"prod\" node dist/index.js",
-    "start:debug": "environment=\"debug\" ts-node-dev --quiet --clear src/index.ts",
+    "dev": "environment=\"dev\" ts-node src/index.ts",
+    "start": "npm run build; environment=\"prod\" node dist/index.js",
     "deploy": "environment=\"prod\" node dist/index.js",
-    "build": "tsc",
-    "watch": "tsc -w"
+    "build": "tsc"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "oogooro",
+  "license": "MIT",
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.11.0",

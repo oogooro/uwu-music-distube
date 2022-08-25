@@ -1,16 +1,6 @@
 import { client, logger } from '../../..';
 import { SlashCommand } from '../../../structures/Command';
-
-function formatTimeDisplay(totalSeconds: number): string {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = Math.floor(totalSeconds % 60);
-
-    function padTo2Digits(num: number): string {
-        return num.toString().padStart(2, '0');
-    }
-
-    return `${padTo2Digits(minutes)}:${padTo2Digits(seconds)}`;
-}
+import { embedColor } from '../../../config.json';
 
 export default new SlashCommand({
     name: 'now-playing',
@@ -29,10 +19,22 @@ export default new SlashCommand({
 
         let progressString = '[';
 
-        for (let i = 0; i <= PROGRESS_LENGHT; i++ ) {
-            if (i < progress) progressString += '―';
-            else if (i === progress) progressString += '๏';
-            else progressString += ' ';
+        if (song.isLive) {
+            const text = 'LIVESTREAM';
+
+            for (let i = 0; i <= (PROGRESS_LENGHT - text.length) / 2; i++) {
+                progressString += ' ';
+            }
+            progressString += text;
+            for (let i = 0; i <= (PROGRESS_LENGHT - text.length) / 2; i++) {
+                progressString += ' ';
+            }
+        } else {
+            for (let i = 0; i <= PROGRESS_LENGHT; i++ ) {
+                if (i < progress) progressString += '―';
+                else if (i === progress) progressString += '๏';
+                else progressString += ' ';
+            }
         }
 
         progressString += ']';
@@ -56,12 +58,12 @@ export default new SlashCommand({
         interaction.reply({
             embeds: [{
                 title: 'Teraz gra',
-                description: `${song.name} - ${song.uploader.name}\n(dodane przez: <@${song.user.id}>)\n\n\`${formatTimeDisplay(queue.currentTime)} / ${formatTimeDisplay(song.duration)} ${progressString}\``,
-                color: 0x4d06b8,
+                description: `${client.utils.distube.songToDisplayString(song)}\n\n\`${client.utils.distube.formatTimeDisplay(queue.currentTime)} / ${song.formattedDuration} ${progressString}\``,
+                color: embedColor,
                 footer: {
                     text: songsLeft === 0 ? `To jest ostatnia piosenka na kolejce` : `${pozostalo} jeszcze ${songsLeft} ${piosenek} na kolejce`,
                 },
             }],
-        }).catch(() => logger.warn({ message: 'Could not reply', silent: true, }));
+        }).catch(() => logger.warn({ message: 'Could not reply', }));
     },
 });

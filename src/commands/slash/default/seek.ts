@@ -2,20 +2,9 @@ import { SlashCommand } from '../../../structures/Command';
 import { client, logger } from '../../..';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-function formatTimeDisplay(totalSeconds: number): string {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = Math.floor(totalSeconds % 60);
-
-    function padTo2Digits(num: number): string {
-        return num.toString().padStart(2, '0');
-    }
-
-    return `${padTo2Digits(minutes)}:${padTo2Digits(seconds)}`;
-}
-
 export default new SlashCommand({
     name: 'seek',
-    description: 'Pomija do podanego miejsca w piosence',
+    description: 'Przewija do podanego miejsca w piosence',
     vcOnly: true,
     options: [
         {
@@ -30,16 +19,22 @@ export default new SlashCommand({
         },
     ],
     run: async ({ interaction }) => {
+        const queue = client.distube.getQueue(interaction.guildId);
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!' }).catch(err => logger.warn({ message: 'could not reply' }));
+
+        if (queue.songs[0].isLive) return interaction.reply({ content: 'Nie można przewijać live!' }).catch(err => logger.warn({ message: 'could not reply' }));
+
         const time = interaction.options.getString('time');
+
         const [ sec, min, hour ] = time.split(':').reverse();
 
-        const timeSecs = ( (parseInt(hour) * 3600) || 0 ) + ( (parseInt(min) * 60) || 0 ) + (parseInt(sec) || 0);
-        if (!timeSecs) return interaction.reply({ content: 'Nie mam pojęcia co ty mi tu podałeś' })
+        const timeSecs = ( (parseInt(hour) * 3600) || 0 ) + ( (parseInt(min) * 60) || 0 ) + (parseInt(sec));
+        if (isNaN(timeSecs) || timeSecs < 0) return interaction.reply({ content: 'Nie potrafię rozczytać podani mi czas! Użyj formatu HH:MM:SS czyli np jak chcesz przewinąć do 8 minuty i 20 sekundy piosenki wpisz 8:20', ephemeral: true, })
             .catch(() => logger.warn({ message: 'Could not reply', }));
 
-        const queue = client.distube.seek(interaction.guildId, timeSecs);
+        const queueNew = client.distube.seek(interaction.guildId, timeSecs);
 
-        interaction.reply({ content: `Pominięto do \`${formatTimeDisplay(queue.currentTime)}\`!` })
+        interaction.reply({ content: `Przewinięto do \`${client.utils.distube.formatTimeDisplay(queueNew.currentTime)}\`!` })
             .catch(() => logger.warn({ message: 'Could not reply', }));
     },
 }); 

@@ -22,7 +22,7 @@ export default new DistubeEvent(
         interaction.editReply({
             embeds: [{
                 title: 'Dodano',
-                description: `${playlistSize} ${piosenek} z ${playlist.name}\n(dodane przez: <@${playlist.user.id}>)`,
+                description: `${playlistSize} ${piosenek} z [${playlist.name}](${playlist.url})\n(dodane przez: <@${playlist.user.id}>)`,
                 color: 0x4d06b8,
             }],
         }).catch(err => {

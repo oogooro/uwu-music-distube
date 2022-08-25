@@ -1,5 +1,6 @@
 import { client, logger } from '../..';
 import { DistubeEvent } from '../../structures/Event';
+import { embedColor } from '../../config.json';
 
 export default new DistubeEvent(
     'addSong',
@@ -8,9 +9,9 @@ export default new DistubeEvent(
 
         interaction.editReply({
             embeds: [{
-                description: `${song.name} - ${song.uploader.name}\n(dodane przez: <@${song.user.id}>)`,
+                description: client.utils.distube.songToDisplayString(song),
                 title: 'Dodano',
-                color: 0x4d06b8,
+                color: embedColor,
             }],
         }).catch(err => {
             logger.warn({ message: 'Could not edit reply', });

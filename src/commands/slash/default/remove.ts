@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { client, logger } from '../../..';
 import { SlashCommand } from '../../../structures/Command';
+import { embedColor } from '../../../config.json';
 
 export default new SlashCommand({
     name: 'remove',
@@ -30,7 +31,11 @@ export default new SlashCommand({
 
         if (!song) return interaction.reply({ content: 'Nie udało się znaleźć piosenki z takim numerem', }).catch(err => logger.warn({ message: 'could not reply' }));
 
-        interaction.reply({ content: `:arrow_heading_up: Usunięto \`${song.name}\`!` })
+        interaction.reply({ embeds: [{
+            title: 'Usunięto',
+            description: client.utils.distube.songToDisplayString(song),
+            color: embedColor
+        }] })
             .catch(err => logger.warn({ message: 'could not live anymore' }));
     },
 });

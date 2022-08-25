@@ -1,11 +1,8 @@
 import { ButtonInteraction, ButtonStyle, ComponentType, InteractionReplyOptions, InteractionUpdateOptions } from 'discord.js';
-import { RepeatMode, Song } from 'distube';
+import { RepeatMode } from 'distube';
 import { client, logger } from '../../..';
 import { SlashCommand } from '../../../structures/Command';
-
-function songToStringDisplay(song: Song): string {
-    return `${song.name} - ${song.uploader.name}\n(dodane przez <@${song.user.id}>)`;
-}
+import { embedColor } from '../../../config.json';
 
 export default new SlashCommand({
     name: 'queue',
@@ -27,9 +24,9 @@ export default new SlashCommand({
             const queue = client.distube.getQueue(interaction.guildId);
             if (!queue || !queue?.songs[0]) {
                 if (!btnInteraction)
-                    return interaction.reply({ content: 'Kolejka nie istnieje!' }).catch(err => logger.warn({ message: 'could not reply' }));
+                    return interaction.reply({ content: 'Kolejka już nie istnieje!' }).catch(err => logger.warn({ message: 'could not reply' }));
                 else 
-                    return btnInteraction.reply({ content: 'Kolejka nie istnieje!', components: [], embeds: [], }).catch(err => logger.warn({ message: 'could not cum' }));
+                    return btnInteraction.update({ content: 'Kolejka już nie istnieje!', components: [], embeds: [], }).catch(err => logger.warn({ message: 'could not cum' }));
             }
             
             const SONGS_PER_PAGE = 8;
@@ -39,10 +36,10 @@ export default new SlashCommand({
 
             if (page === -1) page = pages - 1;
 
-            const currentSong = `Teraz gra: ${songToStringDisplay(songs.shift())}\n\n`;
+            const currentSong = `Teraz gra:\n${client.utils.distube.songToDisplayString(songs.shift())}\n\n`;
             const songsSliced = songs.slice((page * SONGS_PER_PAGE), (page * SONGS_PER_PAGE) + SONGS_PER_PAGE);
 
-            const songsStringArr = songsSliced.map((song, index) => `${(index + (page * SONGS_PER_PAGE) + 1)}. ${songToStringDisplay(song)}`);
+            const songsStringArr = songsSliced.map((song, index) => `${(index + (page * SONGS_PER_PAGE) + 1)}. ${client.utils.distube.songToDisplayString(song)}`);
 
             let loopEmoji: string;
             switch (queue.repeatMode) {
@@ -79,9 +76,9 @@ export default new SlashCommand({
                     {
                         title: `Kolejka ${loopEmoji}`,
                         description: `${page === 0 ? currentSong : ''}${songsStringArr.join('\n\n')}`,
-                        color: 0x4d06b8,
+                        color: embedColor,
                         footer: {
-                            text: `Na kolejce ${znajduje} się ${songsLeft} ${piosenek}`
+                            text: `Na kolejce ${znajduje} się ${songsLeft} ${piosenek}`,
                         },
                     },
                 ],

@@ -6,7 +6,7 @@ import { commandManager } from '../typings/commandManager';
 import { DistubeEvent, Event } from './Event';
 import { logger } from '..';
 import { Agent } from 'undici';
-import DisTube, { DisTubeEvents } from 'distube';
+import DisTube, { DisTubeEvents, Song } from 'distube';
 
 const globPromise = promisify(glob);
 
@@ -42,6 +42,22 @@ export class ExtendedClient extends Client {
 
             if (interaction.type === InteractionType.ApplicationCommand || interaction.type === InteractionType.ApplicationCommandAutocomplete) return `${place}/${interaction.user.id}/${interaction.commandName}`;
             else if (interaction.type === InteractionType.MessageComponent) return `${place}/${interaction.user.id}/${interaction.customId}`;
+        },
+        distube: {
+            songToDisplayString(song: Song): string {
+                return `[${song.name}](${song.url}) - \`${song.formattedDuration}\`\n(dodane przez <@${song.user.id}>)`;
+            },
+            formatTimeDisplay(totalSeconds: number): string {
+                const hours = Math.floor(totalSeconds / 60 / 60);
+                const minutes = Math.floor(totalSeconds / 60) % 60;
+                const seconds = Math.floor(totalSeconds - minutes * 60 - hours * 3600);
+
+                function padTo2Digits(num: number): string {
+                    return num.toString().padStart(2, '0');
+                }
+
+                return `${hours ? `${hours}:` : ''}${padTo2Digits(minutes)}:${padTo2Digits(seconds)}`;
+            }
         },
     }
 
