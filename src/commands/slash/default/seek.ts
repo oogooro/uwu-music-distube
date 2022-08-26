@@ -20,9 +20,9 @@ export default new SlashCommand({
     ],
     run: async ({ interaction }) => {
         const queue = client.distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!' }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
 
-        if (queue.songs[0].isLive) return interaction.reply({ content: 'Nie można przewijać live!' }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (queue.songs[0].isLive) return interaction.reply({ content: 'Nie można przewijać live!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
 
         const time = interaction.options.getString('time');
 

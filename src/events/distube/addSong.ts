@@ -9,8 +9,11 @@ export default new DistubeEvent(
 
         interaction.editReply({
             embeds: [{
-                description: client.utils.distube.songToDisplayString(song),
                 title: 'Dodano',
+                thumbnail: {
+                    url: song.thumbnail,
+                },
+                description: client.utils.distube.songToDisplayString(song),
                 color: embedColor,
             }],
         }).catch(err => {

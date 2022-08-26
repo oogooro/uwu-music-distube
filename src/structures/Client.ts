@@ -23,6 +23,7 @@ export class ExtendedClient extends Client {
     public distube = new DisTube(this, {
         searchSongs: 10,
         searchCooldown: 5,
+        leaveOnStop: false,
     });
 
     public interactionShared: Collection<string, CommandInteraction> = new Collection(); 

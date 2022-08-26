@@ -9,7 +9,7 @@ export default new SlashCommand({
         client.distube.previous(interaction.guildId).then(() => {})
         .catch(err => {
             logger.error({err, message: 'could not wsteczny', });
-            interaction.reply({ content: 'Nie udało się cofnąć piosenki', })
+            interaction.reply({ content: 'Nie udało się cofnąć piosenki', ephemeral: true, })
                 .catch(err => logger.warn({ message: 'could no' }));
         });
 

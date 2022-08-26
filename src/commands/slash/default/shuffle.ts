@@ -13,7 +13,7 @@ export default new SlashCommand({
             })
             .catch(err => {
                 logger.error({ err, message: 'shufla sie wyjebala' });
-                interaction.reply({ content: 'Nie udało się przetasować piosenek!' })
+                interaction.reply({ content: 'Nie udało się przetasować piosenek!', ephemeral: true, })
                     .catch(err => logger.warn({ message: 'could not ' }));
             });
     },

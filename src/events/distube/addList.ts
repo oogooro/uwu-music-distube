@@ -1,5 +1,6 @@
 import { client, logger } from '../..';
 import { DistubeEvent } from '../../structures/Event';
+import { embedColor } from '../../config.json';
 
 export default new DistubeEvent(
     'addList',
@@ -22,8 +23,11 @@ export default new DistubeEvent(
         interaction.editReply({
             embeds: [{
                 title: 'Dodano',
+                thumbnail: {
+                    url: playlist.thumbnail,
+                },
                 description: `${playlistSize} ${piosenek} z [${playlist.name}](${playlist.url})\n(dodane przez: <@${playlist.user.id}>)`,
-                color: 0x4d06b8,
+                color: embedColor,
             }],
         }).catch(err => {
             logger.warn({ message: 'Could not edit reply', });

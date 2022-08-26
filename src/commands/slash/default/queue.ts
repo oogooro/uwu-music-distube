@@ -9,7 +9,7 @@ export default new SlashCommand({
     description: 'Wyświetla kolejkę serwera',
     run: async ({ interaction, }) => {
         const queue = client.distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!' }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
 
         let page = 0;
         
@@ -23,7 +23,8 @@ export default new SlashCommand({
         const update = (btnInteraction?: ButtonInteraction, disableButtons?: boolean) => {
             const queue = client.distube.getQueue(interaction.guildId);
             if (!queue || !queue?.songs[0]) {
-                if (!btnInteraction)
+                if (disableButtons) return interaction.deleteReply().catch(err => logger.error({ err, message: 'could not clean up after empty queue' }));
+                else if (!btnInteraction)
                     return interaction.reply({ content: 'Kolejka już nie istnieje!' }).catch(err => logger.warn({ message: 'could not reply' }));
                 else 
                     return btnInteraction.update({ content: 'Kolejka już nie istnieje!', components: [], embeds: [], }).catch(err => logger.warn({ message: 'could not cum' }));
@@ -41,6 +42,8 @@ export default new SlashCommand({
 
             const songsStringArr = songsSliced.map((song, index) => `${(index + (page * SONGS_PER_PAGE) + 1)}. ${client.utils.distube.songToDisplayString(song)}`);
 
+            let pauseEmoji: string = queue.paused ? ' :pause_button:' : '';
+
             let loopEmoji: string;
             switch (queue.repeatMode) {
                 case RepeatMode.DISABLED:
@@ -48,11 +51,11 @@ export default new SlashCommand({
                     break;
 
                 case RepeatMode.QUEUE:
-                    loopEmoji = '🔁';
+                    loopEmoji = ' 🔁';
                     break;
 
                 case RepeatMode.SONG:
-                    loopEmoji = '🔂';
+                    loopEmoji = ' 🔂';
                     break;
             }
 
@@ -74,7 +77,7 @@ export default new SlashCommand({
             const content: InteractionReplyOptions | InteractionUpdateOptions = {
                 embeds: [
                     {
-                        title: `Kolejka ${loopEmoji}`,
+                        title: `Kolejka${loopEmoji}${pauseEmoji}`,
                         description: `${page === 0 ? currentSong : ''}${songsStringArr.join('\n\n')}`,
                         color: embedColor,
                         footer: {
@@ -128,24 +131,24 @@ export default new SlashCommand({
 
             if (disableButtons) {
                 interaction.editReply(content as InteractionReplyOptions)
-                    .catch(err => logger.error({ message: 'Could not reply', err, }));
+                    .catch(err => logger.error({ message: 'Could edit reply', err, }));
             } else {
                 if (!btnInteraction) interaction.reply(content as InteractionReplyOptions)
-                    .catch(err => logger.error({ message: 'Could not reply', err, }));
+                    .catch(err => logger.error({ message: 'could not reply (update())', err, }));
                 else btnInteraction.update(content as InteractionUpdateOptions)
-                    .catch(err => logger.error({ message: 'Could not reply', err, }));
+                    .catch(err => logger.error({ message: 'Could not update button interaction', err, }));
             }
 
         }
         update();
 
-        const collector = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.Button, idle: 300000 /*5 min*/ });
+        const collector = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.Button, idle: 600_000 /*10 min*/ });
 
         collector.on('collect', btnInteraction => {
             if (btnInteraction.customId === customIds.next) page++;
             else if (btnInteraction.customId === customIds.prev) page--;
             else if (btnInteraction.customId === customIds.first) page=0;
-            else if (btnInteraction.customId === customIds.last) page=-1;
+            else if (btnInteraction.customId === customIds.last) page = -1;
             else return;
 
             update(btnInteraction);

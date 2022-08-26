@@ -9,7 +9,7 @@ export default new SlashCommand({
     vcOnly: true,
     run: async ({ interaction, }) => {
         const queue = client.distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!' }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
 
 
         const customId = client.utils.generateCustomId('loopselect', interaction);
