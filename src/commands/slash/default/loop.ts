@@ -49,7 +49,7 @@ export default new SlashCommand({
             }
             else if (selected === 'queue') {
                 client.distube.setRepeatMode(interaction.guildId, RepeatMode.QUEUE);
-                selectMenuInteraction.update({ content: ':repeat: Włączono zapętlanie Kolejki!', components: [] });
+                selectMenuInteraction.update({ content: ':repeat: Włączono zapętlanie kolejki!', components: [] });
             }
             else {
                 client.distube.setRepeatMode(interaction.guildId, RepeatMode.DISABLED);
