@@ -6,7 +6,6 @@ import { embedColor } from '../../../config.json';
 export default new SlashCommand({
     name: 'remove',
     description: 'Usuń piosenkę z kolejki',
-    vcOnly: true,
     options: [
         {
             type: ApplicationCommandOptionType.Integer,
@@ -18,6 +17,8 @@ export default new SlashCommand({
             required: true,
         },
     ],
+    vcOnly: true,
+    dmPermission: false,
     run: async ({ interaction, }) => {
         const num = interaction.options.getInteger('number');
         

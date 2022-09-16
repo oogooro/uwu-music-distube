@@ -1,4 +1,4 @@
-import { ButtonInteraction, ButtonStyle, ComponentType, InteractionReplyOptions, InteractionUpdateOptions } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, InteractionReplyOptions, InteractionUpdateOptions, MessageActionRowComponent, SelectMenuBuilder } from 'discord.js';
 import { RepeatMode } from 'distube';
 import { client, logger } from '../../..';
 import { SlashCommand } from '../../../structures/Command';
@@ -7,6 +7,7 @@ import { embedColor } from '../../../config.json';
 export default new SlashCommand({
     name: 'queue',
     description: 'Wyświetla kolejkę serwera',
+    dmPermission: false,
     run: async ({ interaction, }) => {
         const queue = client.distube.getQueue(interaction.guildId);
         if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
@@ -20,14 +21,12 @@ export default new SlashCommand({
             last: client.utils.generateCustomId('last', interaction),
         }
 
-        const update = (btnInteraction?: ButtonInteraction, disableButtons?: boolean) => {
+        const update = (btnInteraction?: ButtonInteraction) => {
             const queue = client.distube.getQueue(interaction.guildId);
             if (!queue || !queue?.songs[0]) {
-                if (disableButtons) return interaction.deleteReply().catch(err => logger.error({ err, message: 'could not clean up after empty queue' }));
-                else if (!btnInteraction)
-                    return interaction.reply({ content: 'Kolejka już nie istnieje!' }).catch(err => logger.warn({ message: 'could not reply' }));
-                else 
+                if (btnInteraction)
                     return btnInteraction.update({ content: 'Kolejka już nie istnieje!', components: [], embeds: [], }).catch(err => logger.warn({ message: 'could not cum' }));
+                else return;
             }
             
             const SONGS_PER_PAGE = 8;
@@ -36,6 +35,7 @@ export default new SlashCommand({
             const pages = Math.ceil((songs.length - 1) / SONGS_PER_PAGE);
 
             if (page === -1) page = pages - 1;
+            else if (page > pages) page = 0;
 
             const currentSong = `Teraz gra:\n${client.utils.distube.songToDisplayString(songs.shift())}\n\n`;
             const songsSliced = songs.slice((page * SONGS_PER_PAGE), (page * SONGS_PER_PAGE) + SONGS_PER_PAGE);
@@ -94,19 +94,19 @@ export default new SlashCommand({
                                 customId: customIds.first,
                                 label: '⇤',
                                 style: ButtonStyle.Secondary,
-                                disabled: disableButtons || page <= 0,
+                                disabled: page <= 0,
                             },
                             {
                                 type: ComponentType.Button,
                                 customId: customIds.prev,
                                 label: '←',
                                 style: ButtonStyle.Secondary,
-                                disabled: disableButtons || page <= 0,
+                                disabled: page <= 0,
                             },
                             {
                                 type: ComponentType.Button,
                                 customId: `noid`,
-                                label: `${page + 1}/${pages}`,
+                                label: `${page + 1}/${songsStringArr.length ? pages : '1'}`,
                                 style: ButtonStyle.Secondary,
                                 disabled: true,
                             },
@@ -115,34 +115,28 @@ export default new SlashCommand({
                                 customId: customIds.next,
                                 label: '→',
                                 style: ButtonStyle.Secondary,
-                                disabled: disableButtons || page >= pages - 1,
+                                disabled: page >= pages - 1,
                             },
                             {
                                 type: ComponentType.Button,
                                 customId: customIds.last,
                                 label: '⇥',
                                 style: ButtonStyle.Secondary,
-                                disabled: disableButtons || page >= pages - 1,
+                                disabled: page >= pages - 1,
                             },
                         ],
                     },
                 ],
             }
 
-            if (disableButtons) {
-                interaction.editReply(content as InteractionReplyOptions)
-                    .catch(err => logger.error({ message: 'Could edit reply', err, }));
-            } else {
-                if (!btnInteraction) interaction.reply(content as InteractionReplyOptions)
-                    .catch(err => logger.error({ message: 'could not reply (update())', err, }));
-                else btnInteraction.update(content as InteractionUpdateOptions)
-                    .catch(err => logger.error({ message: 'Could not update button interaction', err, }));
-            }
-
+            if (!btnInteraction) interaction.reply(content as InteractionReplyOptions)
+                .catch(err => logger.error({ message: 'could not reply (update())', err, }));
+            else btnInteraction.update(content as InteractionUpdateOptions)
+                .catch(err => logger.error({ message: 'Could not update button interaction', err, }));
         }
         update();
 
-        const collector = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.Button, idle: 600_000 /*10 min*/ });
+        const collector = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.Button, idle: 300_000 /*6 min*/ });
 
         collector.on('collect', btnInteraction => {
             if (btnInteraction.customId === customIds.next) page++;
@@ -154,8 +148,26 @@ export default new SlashCommand({
             update(btnInteraction);
         });
 
-        collector.once('end', () => {
-            update(null, true);
+        collector.once('end', async () => {
+            const message = await interaction.fetchReply();
+
+            const disabledRows = message.components.reduce((a: ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[], row) => {
+                const components = row.toJSON().components.reduce((a: (ButtonBuilder | SelectMenuBuilder)[], component) => {
+                    let builder: (ButtonBuilder | SelectMenuBuilder) = (component.type === ComponentType.Button) ? ButtonBuilder.from(component) : SelectMenuBuilder.from(component);
+                    builder.setDisabled(true);
+                    a.push(builder);
+                    return a;
+                }, []);
+                const disabledRow = (components[0].data.type === ComponentType.Button) ?
+                    new ActionRowBuilder<ButtonBuilder>().addComponents(components as ButtonBuilder[]) :
+                    new ActionRowBuilder<SelectMenuBuilder>().addComponents(components as SelectMenuBuilder[]);
+                a.push(disabledRow);
+                return a;
+            }, []);
+
+            interaction.editReply({ components: disabledRows, })
+                .catch(err => logger.error({ err, message: 'brainfart', }));
         });
+
     },
 });

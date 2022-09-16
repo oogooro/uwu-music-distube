@@ -5,7 +5,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 export default new SlashCommand({
     name: 'seek',
     description: 'Przewija do podanego miejsca w piosence',
-    vcOnly: true,
     options: [
         {
             type: ApplicationCommandOptionType.String,
@@ -18,6 +17,8 @@ export default new SlashCommand({
             required: true,
         },
     ],
+    vcOnly: true,
+    dmPermission: false,
     run: async ({ interaction }) => {
         const queue = client.distube.getQueue(interaction.guildId);
         if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));

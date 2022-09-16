@@ -5,7 +5,6 @@ import { client, logger } from '../../..';
 export default new SlashCommand({
     name: 'play',
     description: 'Gra podaną muzykę z youtube',
-    vcOnly: true,
     options: [
         {
             type: ApplicationCommandOptionType.String,
@@ -32,11 +31,22 @@ export default new SlashCommand({
             },
             description: 'Czy pominąć aktualną piosenkę',
         },
+        {
+            type: ApplicationCommandOptionType.Boolean,
+            name: 'shuffle',
+            nameLocalizations: {
+                pl: 'przetasować',
+            },
+            description: 'Czy przetasować piosenki po dodaniu',
+        },
     ],
+    vcOnly: true,
+    dmPermission: false,
     run: async ({ interaction }) => {
         const string = interaction.options.getString('song');
         const position = interaction.options.getBoolean('next') ? 1 : 0;
         const skip = interaction.options.getBoolean('skip');
+        const shuffle = interaction.options.getBoolean('shuffle');
 
         await interaction.deferReply().catch(err => logger.warn({ message: 'Could not defer reply' }));
 
@@ -46,13 +56,17 @@ export default new SlashCommand({
         client.distube.play(member.voice.channel, string, {
             member,
             position,
-            textChannel: interaction.channel,
         })
         .then(() => {
             if (skip) {
                 const queue = client.distube.getQueue(interaction.guildId);
                 if (!queue || !queue.songs[1]) return;
                 client.distube.skip(interaction.guildId);
+            }
+            if (shuffle) {
+                const queue = client.distube.getQueue(interaction.guildId);
+                if (!queue || !queue.songs[1]) return;
+                client.distube.shuffle(interaction.guildId);
             }
         })
         .catch(err => {

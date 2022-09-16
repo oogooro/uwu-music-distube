@@ -26,15 +26,11 @@ export default new Event('interactionCreate', async interaction => {
 
             const member = interaction.member as GuildMember;
 
-            if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true });
+            if (command.vcOnly && !member?.voice?.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true });
 
             logger.debug({ message: `Executing command: ${interaction.commandName}`, });
             const usedCommand = command.run({ interaction, subcommands, }).catch(err => logger.error({ message: `Slash command crashed`, err, }));
         }
-        // setTimeout(() => {  // the fuck up timer
-        //     if (interaction.deferred && !interaction.replied) interaction.editReply({ content: `:x: Coś poszło nie tak i ta komenda nie została wykonana poprawnie`, })
-        //         .catch(err => logger.warn({ message: 'Could not edit reply for failed defered interaction', silent: true, }));
-        // }, 15000 /*15s*/);
     }
     else if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
         logger.debug({ message: `Interaction autocomplete for: ${interaction.commandName}`, });

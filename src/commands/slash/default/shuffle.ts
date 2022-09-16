@@ -5,6 +5,7 @@ export default new SlashCommand({
     name: 'shuffle',
     description: 'Przetasuj piosenki',
     vcOnly: true,
+    dmPermission: false,
     run: async ({ interaction, }) => {
         client.distube.shuffle(interaction.guildId)
             .then(() => {

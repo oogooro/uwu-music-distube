@@ -5,6 +5,7 @@ import { embedColor } from '../../../config.json';
 export default new SlashCommand({
     name: 'now-playing',
     description: 'Zobacz co aktualnie gra na serwerze',
+    dmPermission: false,
     run: async ({ interaction }) => {
         const queue = client.distube.getQueue(interaction.guildId);
 

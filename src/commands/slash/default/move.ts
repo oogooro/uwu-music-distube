@@ -3,7 +3,7 @@ import { client, logger } from '../../..';
 import { SlashCommand } from '../../../structures/Command';
 import { embedColor } from '../../../config.json';
 
-function arrayMove(arr: any[], fromIndex: number, toIndex: number): void {  // thanks https://stackoverflow.com/a/6470794 (im just too lazy)
+function arrayMove(arr: any[], fromIndex: number, toIndex: number): void {  // thanks https://stackoverflow.com/a/6470794 (im just too lazy [proceeds to es6ify and tsify it])
     const element = arr[fromIndex];
     arr.splice(fromIndex, 1);
     arr.splice(toIndex, 0, element);
@@ -35,6 +35,7 @@ export default new SlashCommand({
             minValue: 1,
         },
     ],
+    dmPermission: false,
     run: async ({ interaction, }) => {
         const queue = client.distube.getQueue(interaction.guildId);
         if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
@@ -50,8 +51,8 @@ export default new SlashCommand({
 
         interaction.reply({
             embeds: [{
-                title: 'Zmieniono miejsce',
-                description: `Zmeniono miejsce piosenki \`${song.name}\` do \`${placeIndex}\`!${songIndex === placeIndex ? ' (nawet jeśli nie ma to sensu)' : ''}`,
+                title: 'Przesunięto piosenkę',
+                description: `Przesunięto piosenkę \`${song.name}\` na miejsce nr \`${placeIndex}\`!${songIndex === placeIndex ? ' (nawet jeśli nie ma to sensu)' : ''}`,
                 color: embedColor,
             }],
         })

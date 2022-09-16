@@ -4,6 +4,7 @@ import { client } from '../../..';
 export default new SlashCommand({
     name: 'leave',
     description: 'Odłącza z kanału głosowego',
+    dmPermission: false,
     run: async ({ interaction }) => {
         if (client.distube.getQueue(interaction.guildId)) client.distube.stop(interaction.guildId);
         const voice = client.distube.voices.get(interaction.guildId);

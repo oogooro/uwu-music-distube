@@ -5,6 +5,7 @@ export default new SlashCommand({
     name: 'previous',
     description: 'Gra poprzednią piosenkę',
     vcOnly: true,
+    dmPermission: false,
     run: async ({ interaction, }) => {
         client.distube.previous(interaction.guildId).then(() => {})
         .catch(err => {

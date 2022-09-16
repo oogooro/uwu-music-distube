@@ -6,7 +6,6 @@ import { embedColor } from '../../../config.json';
 export default new SlashCommand({
     name: 'swap',
     description: 'Zamienia miescami piosenki z kolejki',
-    vcOnly: true,
     options: [
         {
             type: ApplicationCommandOptionType.Integer,
@@ -29,6 +28,8 @@ export default new SlashCommand({
             minValue: 1,
         },
     ],
+    vcOnly: true,
+    dmPermission: false,
     run: async ({ interaction, }) => {
         const queue = client.distube.getQueue(interaction.guildId);
         if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));

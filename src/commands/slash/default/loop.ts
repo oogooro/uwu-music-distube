@@ -1,5 +1,4 @@
-import { ActionRowBuilder, ComponentType, SelectMenuBuilder } from 'discord.js';
-import { RepeatMode } from 'distube';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { client, logger } from '../../..';
 import { SlashCommand } from '../../../structures/Command';
 
@@ -7,61 +6,37 @@ export default new SlashCommand({
     name: 'loop',
     description: 'Zapętl piosenkę lub kolejkę',
     vcOnly: true,
+    options: [
+        {
+            type: ApplicationCommandOptionType.String,
+            name: 'mode',
+            nameLocalizations: {
+                pl: 'sposób',
+            },
+            description: 'Sposób zapętlania',
+            choices: [
+                { name: '🔂 Piosenka', value: '1', },
+                { name: '🔁 Kolejka', value: '2', },
+                { name: '🚫 Wyłączone', value: '0', },
+            ],
+            required: true,
+        },
+    ],
+    dmPermission: false,
     run: async ({ interaction, }) => {
         const queue = client.distube.getQueue(interaction.guildId);
         if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
 
+        const mode = interaction.options.getString('mode');
 
-        const customId = client.utils.generateCustomId('loopselect', interaction);
+        queue.setRepeatMode(parseInt(mode));
 
-        const row = new ActionRowBuilder()
-            .addComponents(
-                new SelectMenuBuilder()
-                    .addOptions(
-                        {
-                            label: 'Piosenka',
-                            value: 'song',
-                            emoji: '🔂',
-                        },
-                        {
-                            label: 'Kolejka',
-                            value: 'queue',
-                            emoji: '🔁',
-                        },
-                        {
-                            label: 'Wyłączone',
-                            value: 'loopoff',
-                            emoji: '🚫',
-                        },
-                    )
-                    .setMaxValues(1)
-                    .setCustomId(customId)                    
-            );
+        const strings = [
+            '🚫 Wyłączono zapętlanie!',
+            '🔂 Włączono zapętlanie piosenki!',
+            '🔁 Włączono zapętlanie kolejki',
+        ]
 
-        const collector = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.SelectMenu, filter: (c => c.customId === customId), time: 60_000, max: 1, });
-
-        collector.on('collect', selectMenuInteraction => {
-            const [selected] = selectMenuInteraction.values;
-
-            if (selected === 'song') {
-                client.distube.setRepeatMode(interaction.guildId, RepeatMode.SONG);
-                selectMenuInteraction.update({ content: ':repeat_one: Włączono zapętlanie piosenki!', components: [] });
-            }
-            else if (selected === 'queue') {
-                client.distube.setRepeatMode(interaction.guildId, RepeatMode.QUEUE);
-                selectMenuInteraction.update({ content: ':repeat: Włączono zapętlanie kolejki!', components: [] });
-            }
-            else {
-                client.distube.setRepeatMode(interaction.guildId, RepeatMode.DISABLED);
-                selectMenuInteraction.update({ content: 'Wyłączono zapętlanie!', components: [] });
-            }
-        });
-
-        collector.once('end', (collected, reason) => {
-            if (collected.size === 0) interaction.editReply({ content: 'Nie wybrano sposobu zapętlania na czas!', components: [] });
-        });
-
-        await interaction.reply({ content: 'Wybierz sposób zapętlania:', components: [row as ActionRowBuilder<SelectMenuBuilder>], })
-            .catch((err) => logger.error({err, message: 'Could not reply', }));
+        interaction.reply({ content: strings[mode] });
     },
 });

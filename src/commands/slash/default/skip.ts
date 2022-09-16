@@ -6,7 +6,6 @@ import { SlashCommand } from '../../../structures/Command';
 export default new SlashCommand({
     name: 'skip',
     description: 'Pomiń piosenkę',
-    vcOnly: true,
     options: [
         {
             type: ApplicationCommandOptionType.Integer,
@@ -17,6 +16,8 @@ export default new SlashCommand({
             description: 'Numer do jakiej piosenki pominąć',
         },
     ],
+    vcOnly: true,
+    dmPermission: false,
     run: async ({ interaction, }) => {
         const num = interaction.options.getInteger('to');
 
