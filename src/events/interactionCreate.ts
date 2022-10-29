@@ -4,12 +4,13 @@ import { botSettingsDB } from '../structures/Database';
 import { botSettings } from '../typings/database';
 import { logger } from '..';
 import { ChannelType, GuildMember, InteractionType } from 'discord.js';
+import { generateInteractionTrace } from '../utils';
 
 export default new Event('interactionCreate', async interaction => {
     const { devs, online, }: botSettings = botSettingsDB.get('settings');
     if (!online && !devs.includes(interaction.user.id)) return;
 
-    const trace = client.utils.generateInteractionTrace(interaction);
+    const trace = generateInteractionTrace(interaction);
     if (interaction.type === InteractionType.ApplicationCommand) {
         if (interaction.isChatInputCommand()) {
             logger.debug({ message: `Interaction created: ${trace}`, });

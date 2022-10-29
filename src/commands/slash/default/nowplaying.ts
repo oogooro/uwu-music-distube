@@ -1,6 +1,7 @@
 import { client, logger } from '../../..';
 import { SlashCommand } from '../../../structures/Command';
-import { embedColor } from '../../../config.json';
+import conifg from '../../../config';
+import { distube } from '../../../utils';
 
 export default new SlashCommand({
     name: 'now-playing',
@@ -59,8 +60,8 @@ export default new SlashCommand({
         interaction.reply({
             embeds: [{
                 title: 'Teraz gra',
-                description: `${client.utils.distube.songToDisplayString(song)}\n\n\`${client.utils.distube.formatTimeDisplay(queue.currentTime)} / ${song.formattedDuration} ${progressString}\``,
-                color: embedColor,
+                description: `${distube.songToDisplayString(song)}\n\n\`${distube.formatTimeDisplay(queue.currentTime)} / ${song.formattedDuration} ${progressString}\``,
+                color: conifg.embedColor,
                 footer: {
                     text: songsLeft === 0 ? `To jest ostatnia piosenka na kolejce` : `${pozostalo} jeszcze ${songsLeft} ${piosenek} na kolejce`,
                 },

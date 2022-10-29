@@ -2,7 +2,8 @@ import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Compon
 import { RepeatMode } from 'distube';
 import { client, logger } from '../../..';
 import { SlashCommand } from '../../../structures/Command';
-import { embedColor } from '../../../config.json';
+import config from '../../../config';
+import { generateCustomId, distube } from '../../../utils';
 
 export default new SlashCommand({
     name: 'queue',
@@ -15,10 +16,10 @@ export default new SlashCommand({
         let page = 0;
         
         const customIds = {
-            next: client.utils.generateCustomId('next', interaction),
-            prev: client.utils.generateCustomId('prev', interaction),
-            first: client.utils.generateCustomId('first', interaction),
-            last: client.utils.generateCustomId('last', interaction),
+            next: generateCustomId('next', interaction),
+            prev: generateCustomId('prev', interaction),
+            first: generateCustomId('first', interaction),
+            last: generateCustomId('last', interaction),
         }
 
         const update = (btnInteraction?: ButtonInteraction) => {
@@ -37,10 +38,10 @@ export default new SlashCommand({
             if (page === -1) page = pages - 1;
             else if (page > pages) page = 0;
 
-            const currentSong = `Teraz gra:\n${client.utils.distube.songToDisplayString(songs.shift())}\n\n`;
+            const currentSong = `Teraz gra:\n${distube.songToDisplayString(songs.shift())}\n\n`;
             const songsSliced = songs.slice((page * SONGS_PER_PAGE), (page * SONGS_PER_PAGE) + SONGS_PER_PAGE);
 
-            const songsStringArr = songsSliced.map((song, index) => `${(index + (page * SONGS_PER_PAGE) + 1)}. ${client.utils.distube.songToDisplayString(song)}`);
+            const songsStringArr = songsSliced.map((song, index) => `${(index + (page * SONGS_PER_PAGE) + 1)}. ${distube.songToDisplayString(song)}`);
 
             let pauseEmoji: string = queue.paused ? ' :pause_button:' : '';
 
@@ -79,7 +80,7 @@ export default new SlashCommand({
                     {
                         title: `Kolejka${loopEmoji}${pauseEmoji}`,
                         description: `${page === 0 ? currentSong : ''}${songsStringArr.join('\n\n')}`,
-                        color: embedColor,
+                        color: config.embedColor,
                         footer: {
                             text: `Na kolejce ${znajduje} się ${songsLeft} ${piosenek}`,
                         },

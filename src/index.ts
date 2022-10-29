@@ -1,18 +1,18 @@
 import { ExtendedClient } from './structures/Client';
-import { intents } from './config.json';
+import config from './config';
 import dotenv from 'dotenv';
 import { Logger } from './structures/Logger';
 dotenv.config();
 
 export const logger = new Logger({});
-export const client = new ExtendedClient({ intents, });
+export const client = new ExtendedClient(config.clientOptions);
 
-if (process.env.environment) logger.log({
+if (process.env.ENV) logger.log({
     level: 'init',
-    message: `Running on ${process.env.environment}`,
+    message: `Running on ${process.env.ENV}`,
     color: 'greenBright',
 });
-else logger.warn({ message: 'ENVVAR `environment` is not set', });
+else logger.warn({ message: 'ENVVAR ENV is not set', });
 
 logger.debug({ message: `Client created`, });
 

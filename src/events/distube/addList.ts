@@ -1,6 +1,6 @@
 import { client, logger } from '../..';
 import { DistubeEvent } from '../../structures/Event';
-import { embedColor } from '../../config.json';
+import config from '../../config';
 
 export default new DistubeEvent(
     'addList',
@@ -27,7 +27,7 @@ export default new DistubeEvent(
                     url: playlist.thumbnail,
                 },
                 description: `${playlistSize} ${piosenek} z [${playlist.name}](${playlist.url})\n(dodane przez: <@${playlist.user.id}>)`,
-                color: embedColor,
+                color: config.embedColor,
             }],
         }).catch(err => {
             logger.warn({ message: 'Could not edit reply', });

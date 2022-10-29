@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { client, logger } from '../../..';
 import { SlashCommand } from '../../../structures/Command';
-import { embedColor } from '../../../config.json';
+import config from '../../../config';
 
 function arrayMove(arr: any[], fromIndex: number, toIndex: number): void {  // thanks https://stackoverflow.com/a/6470794 (im just too lazy [proceeds to es6ify and tsify it])
     const element = arr[fromIndex];
@@ -53,7 +53,7 @@ export default new SlashCommand({
             embeds: [{
                 title: 'Przesunięto piosenkę',
                 description: `Przesunięto piosenkę \`${song.name}\` na miejsce nr \`${placeIndex}\`!${songIndex === placeIndex ? ' (nawet jeśli nie ma to sensu)' : ''}`,
-                color: embedColor,
+                color: config.embedColor,
             }],
         })
     },

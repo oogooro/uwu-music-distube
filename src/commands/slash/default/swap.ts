@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { client, logger } from '../../..';
 import { SlashCommand } from '../../../structures/Command';
-import { embedColor } from '../../../config.json';
+import config from '../../../config';
 
 export default new SlashCommand({
     name: 'swap',
@@ -48,7 +48,7 @@ export default new SlashCommand({
             embeds: [{
                 title: 'Zamieniono miejscami',
                 description: `Zamieniono miejscami \`${song1.name}\` z \`${song2.name}\`${song1index === song2index ? ' (lol)' : ''}`,
-                color: embedColor,
+                color: config.embedColor,
             }],
         })
     },

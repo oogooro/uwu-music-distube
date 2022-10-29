@@ -1,7 +1,8 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { client, logger } from '../../..';
 import { SlashCommand } from '../../../structures/Command';
-import { embedColor } from '../../../config.json';
+import config from '../../../config';
+import { distube } from '../../../utils';
 
 export default new SlashCommand({
     name: 'remove',
@@ -34,8 +35,8 @@ export default new SlashCommand({
 
         interaction.reply({ embeds: [{
             title: 'Usunięto',
-            description: client.utils.distube.songToDisplayString(song),
-            color: embedColor
+            description: distube.songToDisplayString(song),
+            color: config.embedColor
         }] })
             .catch(err => logger.warn({ message: 'could not live anymore' }));
     },

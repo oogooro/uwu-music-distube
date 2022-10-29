@@ -7,10 +7,10 @@ import { ActivityType } from 'discord.js';
 export default new Event('ready', async () => {
     const { online, status, } = botSettingsDB.get('settings') as botSettings;
 
-    if (!process.env.guildId) logger.warn({ message: 'ENVVAR guildId is not set. Not registering commands.', });
+    if (!process.env.BOT_GUILD_ID) logger.warn({ message: 'ENVVAR guildId is not set. Not registering commands.', });
     else {
-        client.guilds.fetch(process.env.guildId).then(guild => {
-            client.registerCommands(client.commands.payload.allCommands, process.env.guildId, false)
+        client.guilds.fetch(process.env.BOT_GUILD_ID).then(guild => {
+            client.registerCommands(client.commands.payload.allCommands, process.env.BOT_GUILD_ID, false)
                 .catch(() => { });
         }).catch(err => {
             logger.warn({ message: 'Could not find bot\'s main guild. Not registering commands.', });

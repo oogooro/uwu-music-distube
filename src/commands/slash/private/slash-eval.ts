@@ -1,6 +1,7 @@
 import { ComponentType, ModalComponentData, TextInputStyle } from 'discord.js';
 import { SlashCommand } from '../../../structures/Command';
-import { client, logger } from '../../..';
+import { logger } from '../../..';
+import { generateCustomId } from '../../../utils';
 
 export default new SlashCommand({
     name: 'eval',
@@ -9,7 +10,7 @@ export default new SlashCommand({
     run: async ({ interaction, }) => {
         const modal: ModalComponentData = {
             title: 'Eval',
-            customId: client.utils.generateCustomId('modal', interaction),
+            customId: generateCustomId('modal', interaction),
             components: [
                 {
                     type: ComponentType.ActionRow,

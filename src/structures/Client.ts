@@ -1,4 +1,4 @@
-import { ApplicationCommandDataResolvable, Client, ClientEvents, ClientOptions, Collection, CommandInteraction, Interaction, InteractionType } from 'discord.js';
+import { ApplicationCommandDataResolvable, Client, ClientEvents, ClientOptions, Collection, CommandInteraction } from 'discord.js';
 import glob from 'glob';
 import { promisify } from 'node:util';
 import { SlashCommandType } from '../typings/command';
@@ -6,7 +6,7 @@ import { commandManager } from '../typings/commandManager';
 import { DistubeEvent, Event } from './Event';
 import { logger } from '..';
 import { Agent } from 'undici';
-import DisTube, { DisTubeEvents, Song } from 'distube';
+import DisTube, { DisTubeEvents } from 'distube';
 
 const globPromise = promisify(glob);
 
@@ -28,41 +28,7 @@ export class ExtendedClient extends Client {
 
     public interactionShared: Collection<string, CommandInteraction> = new Collection(); 
 
-    private vars = {
-        customIdIncrement: 0,
-    }
-
-    public utils = {
-        generateCustomId: (text: string, interaction: CommandInteraction): string => {
-            if (this.vars.customIdIncrement >= 100) this.vars.customIdIncrement = 0;
-            this.vars.customIdIncrement++;
-            return `${interaction.commandName}-${text}-${interaction.user.id}-${interaction.createdTimestamp}-${this.vars.customIdIncrement}`.toUpperCase();
-        },
-        generateInteractionTrace: (interaction: Interaction): string => {
-            const place = interaction.guildId || 'DM';
-
-            if (interaction.type === InteractionType.ApplicationCommand || interaction.type === InteractionType.ApplicationCommandAutocomplete) return `${place}/${interaction.user.id}/${interaction.commandName}`;
-            else if (interaction.type === InteractionType.MessageComponent) return `${place}/${interaction.user.id}/${interaction.customId}`;
-        },
-        distube: {
-            songToDisplayString(song: Song): string {
-                return `[${song.name}](${song.url}) - \`${song.formattedDuration}\`\n(dodane przez <@${song.user.id}>)`;
-            },
-            formatTimeDisplay(totalSeconds: number): string {
-                const hours = Math.floor(totalSeconds / 60 / 60);
-                const minutes = Math.floor(totalSeconds / 60) % 60;
-                const seconds = Math.floor(totalSeconds - minutes * 60 - hours * 3600);
-
-                function padTo2Digits(num: number): string {
-                    return num.toString().padStart(2, '0');
-                }
-
-                return `${hours ? `${hours}:` : ''}${padTo2Digits(minutes)}:${padTo2Digits(seconds)}`;
-            }
-        },
-    }
-
-    constructor(clientOptions: ClientOptions = { intents: 513, }) {
+    constructor(clientOptions: ClientOptions) {
         super(clientOptions);
 
         this.rest.setAgent(new Agent({
@@ -75,7 +41,7 @@ export class ExtendedClient extends Client {
     public start() {
         logger.debug({ message: `Starting client...`, });
         this.initModules();
-        this.login(process.env.botToken);
+        this.login(process.env.DISCORDBOT_TOKEN);
     }
 
     public async registerCommandsGlobally(commands: ApplicationCommandDataResolvable[]) {

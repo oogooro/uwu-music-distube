@@ -1,6 +1,7 @@
 import { SlashCommand } from '../../../structures/Command';
 import { client, logger } from '../../..';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { distube } from '../../../utils';
 
 export default new SlashCommand({
     name: 'seek',
@@ -35,7 +36,7 @@ export default new SlashCommand({
 
         const queueNew = client.distube.seek(interaction.guildId, timeSecs);
 
-        interaction.reply({ content: `Przewinięto do \`${client.utils.distube.formatTimeDisplay(queueNew.currentTime)}\`!` })
+        interaction.reply({ content: `Przewinięto do \`${distube.formatTimeDisplay(queueNew.currentTime)}\`!` })
             .catch(() => logger.warn({ message: 'Could not reply', }));
     },
 }); 

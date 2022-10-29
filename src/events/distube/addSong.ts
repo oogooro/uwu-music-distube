@@ -1,6 +1,7 @@
 import { client, logger } from '../..';
 import { DistubeEvent } from '../../structures/Event';
-import { embedColor } from '../../config.json';
+import config from '../../config';
+import { distube } from '../../utils';
 
 export default new DistubeEvent(
     'addSong',
@@ -13,8 +14,8 @@ export default new DistubeEvent(
                 thumbnail: {
                     url: song.thumbnail,
                 },
-                description: client.utils.distube.songToDisplayString(song),
-                color: embedColor,
+                description: distube.songToDisplayString(song),
+                color: config.embedColor,
             }],
         }).catch(err => {
             logger.warn({ message: 'Could not edit reply', });

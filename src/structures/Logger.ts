@@ -46,7 +46,7 @@ export class Logger {
     }
 
     debug({ message, color, silent = true }: OtherOptions) {
-        if (process.env.debug === '1' || process.env.environment === 'debug') silent = false;
+        if (process.env.DEBUG_MODE === '1' || process.env.ENV === 'debug') silent = false;
 
         return this.log({
             level: 'debug',
