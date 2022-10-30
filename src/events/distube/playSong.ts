@@ -1,5 +1,5 @@
 import { client, logger } from '../..';
-import { DistubeEvent } from '../../structures/Event';
+import { DistubeEvent } from '../../structures/DistubeEvent';
 
 export default new DistubeEvent(
     'playSong',

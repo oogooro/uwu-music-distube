@@ -14,19 +14,18 @@ export function generateInteractionTrace(interaction: Interaction): string {
     else if (interaction.type === InteractionType.MessageComponent || interaction.type === InteractionType.ModalSubmit) return `${place}/${interaction.user.id}/${interaction.customId}`;
 }
 
-export const distube = {
-    songToDisplayString(song: Song): string {
-        return `[${song.name}](${song.url}) - \`${song.formattedDuration}\`\n(dodane przez <@${song.user.id}>)`;
-    },
-    formatTimeDisplay(totalSeconds: number): string {
-        const hours = Math.floor(totalSeconds / 60 / 60);
-        const minutes = Math.floor(totalSeconds / 60) % 60;
-        const seconds = Math.floor(totalSeconds - minutes * 60 - hours * 3600);
+export function songToDisplayString(song: Song): string {
+    return `[${song.name}](${song.url}) - \`${song.formattedDuration}\`\n(dodane przez <@${song.user.id}>)`;
+}
 
-        function padTo2Digits(num: number): string {
-            return num.toString().padStart(2, '0');
-        }
+export function formatTimeDisplay(totalSeconds: number): string {
+    const hours = Math.floor(totalSeconds / 60 / 60);
+    const minutes = Math.floor(totalSeconds / 60) % 60;
+    const seconds = Math.floor(totalSeconds - minutes * 60 - hours * 3600);
 
-        return `${hours ? `${hours}:` : ''}${padTo2Digits(minutes)}:${padTo2Digits(seconds)}`;
+    function padTo2Digits(num: number): string {
+        return num.toString().padStart(2, '0');
     }
+
+    return `${hours ? `${hours}:` : ''}${padTo2Digits(minutes)}:${padTo2Digits(seconds)}`;
 }

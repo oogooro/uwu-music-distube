@@ -1,13 +1,27 @@
-import { ApplicationCommandDataResolvable, Collection } from "discord.js";
-import { SlashCommandType } from "./command";
+import { ApplicationCommandDataResolvable, Collection } from 'discord.js';
+import { ContextMenuCommandType } from './contextMenuCommand';
+import { SlashCommandType } from './slashCommand';
 
-export type CommandCategoryName = string;
+export interface CommandCategory {
+    manifest: CommandCategoryManifest;
+    commands: ApplicationCommandDataResolvable[];
+}
 
-export interface commandManager {
+export interface CommandCategoryManifest {
+    displayName: string;
+    description: string;
+    emoji: string;
+    hidden?: boolean;
+    nsfw?: boolean;
+}
+
+export type BotCommand = SlashCommandType | ContextMenuCommandType
+
+export interface CommandManager {
     payload: {
-        categories: Collection<CommandCategoryName, ApplicationCommandDataResolvable[]>;
+        categories: Collection<string, CommandCategory>;
         allCommands: ApplicationCommandDataResolvable[];
         global: ApplicationCommandDataResolvable[];
     };
-    commandsExecutable: Collection<string, SlashCommandType>;
+    commandsExecutable: Collection<string, BotCommand>;
 }
