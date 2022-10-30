@@ -1,12 +1,10 @@
-import { Collection } from 'discord.js';
+import { ActivitiesOptions } from 'discord.js';
 
-export interface botSettings {
+export interface BotSettings {
     online: boolean;
     status: {
-        enabled: boolean;
-        text: string;
+        visible: boolean;
+        data: ActivitiesOptions[];
     };
     devs: string[];
 }
-
-export type CustomUserRoleInfo = Collection<string, string>;

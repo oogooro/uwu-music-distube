@@ -1,11 +1,11 @@
-import { client, logger } from '../..';
-import { DistubeEvent } from '../../structures/Event';
+import { client, distube, logger } from '../..';
 import config from '../../config';
+import { DistubeEvent } from '../../structures/DistubeEvent';
 
 export default new DistubeEvent(
     'addList',
     async (queue, playlist) => {
-        const interaction = client.interactionShared.get(queue.id);
+        const interaction = distube.interactionShared.get(queue.id);
 
         const playlistSize = playlist.songs.length;
 

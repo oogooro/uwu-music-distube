@@ -1,12 +1,13 @@
-import { client, logger } from '../..';
-import { DistubeEvent } from '../../structures/Event';
+import { client, distube, logger } from '../..';
 import config from '../../config';
-import { distube } from '../../utils';
+import { DistubeEvent } from '../../structures/DistubeEvent';
+import { songToDisplayString } from '../../utils';
+
 
 export default new DistubeEvent(
     'addSong',
     async (queue, song) => {
-        const interaction = client.interactionShared.get(queue.id);
+        const interaction = distube.interactionShared.get(queue.id);
 
         interaction.editReply({
             embeds: [{
@@ -14,7 +15,7 @@ export default new DistubeEvent(
                 thumbnail: {
                     url: song.thumbnail,
                 },
-                description: distube.songToDisplayString(song),
+                description: songToDisplayString(song),
                 color: config.embedColor,
             }],
         }).catch(err => {
