@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Collection } from 'discord.js';
+import { Collection, CommandInteraction, TextBasedChannel } from 'discord.js';
 import DisTube, { DisTubeEvents, DisTubeOptions } from 'distube';
 import glob from 'glob';
 import { promisify } from 'node:util';
@@ -8,7 +8,8 @@ import { DistubeEvent } from './DistubeEvent';
 const globPromise = promisify(glob);
 
 export default class ExtendedDistube extends DisTube {
-    public interactionShared: Collection<string, ChatInputCommandInteraction> = new Collection();
+    public interactionShared: Collection<string, CommandInteraction> = new Collection();
+    public errorChannel: Collection<string, TextBasedChannel> = new Collection();
     
     constructor(options: DisTubeOptions) {
         super(client, options);

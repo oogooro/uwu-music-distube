@@ -1,6 +1,7 @@
 import { ApplicationCommandDataResolvable, Collection } from 'discord.js';
-import { ContextMenuCommandType } from './contextMenuCommand';
+import { MessageCommandType } from './messageCommand';
 import { SlashCommandType } from './slashCommand';
+import { UserCommandType } from './userCommand';
 
 export interface CommandCategory {
     manifest: CommandCategoryManifest;
@@ -15,7 +16,7 @@ export interface CommandCategoryManifest {
     nsfw?: boolean;
 }
 
-export type BotCommand = SlashCommandType | ContextMenuCommandType
+export type BotCommand = SlashCommandType | UserCommandType | MessageCommandType;
 
 export interface CommandManager {
     payload: {

@@ -8,6 +8,7 @@ export default new DistubeEvent(
     'addSong',
     async (queue, song) => {
         const interaction = distube.interactionShared.get(queue.id);
+        distube.interactionShared.delete(queue.id);
 
         interaction.editReply({
             embeds: [{
@@ -18,8 +19,6 @@ export default new DistubeEvent(
                 description: songToDisplayString(song),
                 color: config.embedColor,
             }],
-        }).catch(err => {
-            logger.warn({ message: 'Could not edit reply', });
-        });
+        }).catch(err => logger.error({ err, message: 'Could not edit reply', }));
     }
 );

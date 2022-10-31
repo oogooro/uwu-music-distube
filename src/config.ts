@@ -16,9 +16,11 @@ const config: Config = {
         intents: [intentFlags.Guilds, intentFlags.GuildMembers, intentFlags.GuildVoiceStates],
     },
     distubeOptions: {
-        searchSongs: 10,
+        searchSongs: 0,
         searchCooldown: 5,
         leaveOnEmpty: false,
+        leaveOnFinish: false,
+        leaveOnStop: false,
     },
     logger: {
         disableWriteStreams: false,

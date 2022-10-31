@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
+import { APIEmbed, ApplicationCommandOptionType, GuildMember } from 'discord.js';
 import { SlashCommand } from '../../structures/SlashCommand';
 import { client, distube, logger } from '../..';
 
@@ -50,9 +50,10 @@ export default new SlashCommand({
         const skip = interaction.options.getBoolean('skip');
         const shuffle = interaction.options.getBoolean('shuffle');
 
-        await interaction.deferReply().catch(err => logger.warn({ message: 'Could not defer reply' }));
+        await interaction.deferReply().catch(err => logger.error({ err, message: 'Could not edit reply', }));
 
         distube.interactionShared.set(interaction.guildId, interaction);
+        distube.errorChannel.set(interaction.guildId, interaction.channel);
 
         const member = interaction.member as GuildMember;
         distube.play(member.voice.channel, string, {
@@ -73,8 +74,17 @@ export default new SlashCommand({
         })
         .catch(err => {
             logger.error({ err, message: 'bruh', });
-            return interaction.editReply({ content: 'Coś poszło nie tak i nie można zagrać muzyki', })
-                .catch(() => logger.warn({ message: 'Could not reply', }));
+
+            const content = err.message.toLowerCase().includes('nsfw') ? 'Nie udało się dodać piosenki, bo Youtube nie pozwala odtwarzać piosenek 18+ bez zalogowania się' : 'Coś poszło nie tak i nie można zagrać muzyki ||(skill issue distube)||';
+            
+            const embed: APIEmbed = {
+                title: 'Wystąpił błąd!',
+                color: 0xff0000,
+                description: content,
+            }
+            
+            return interaction.editReply({ embeds: [embed], })
+                .catch(err => logger.error({ err, message: 'Could not edit reply', }));
         });
     },
 });

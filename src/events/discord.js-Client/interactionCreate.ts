@@ -3,10 +3,11 @@ import { DjsClientEvent } from '../../structures/DjsClientEvent';
 import { botSettingsDB } from '../../structures/Database';
 import { BotSettings } from '../../typings/database';
 import { logger } from '../..';
-import { InteractionType } from 'discord.js';
+import { GuildMember, InteractionType } from 'discord.js';
 import { SlashCommandType } from '../../typings/slashCommand';
-import { ContextMenuCommandType } from '../../typings/contextMenuCommand';
 import { generateInteractionTrace } from '../../utils';
+import { UserCommandType } from '../../typings/userCommand';
+import { MessageCommandType } from '../../typings/messageCommand';
 
 export default new DjsClientEvent('interactionCreate', async interaction => {
     const { devs, online, }: BotSettings = botSettingsDB.get('settings');
@@ -14,6 +15,7 @@ export default new DjsClientEvent('interactionCreate', async interaction => {
 
     const trace = generateInteractionTrace(interaction);
     if (interaction.type === InteractionType.ApplicationCommand) {
+        const member = interaction.member as GuildMember;
         if (interaction.isChatInputCommand()) {
             logger.debug({ message: `Slash command interaction recrived: ${trace}`, });
 
@@ -29,15 +31,31 @@ export default new DjsClientEvent('interactionCreate', async interaction => {
                     return interaction.reply({ content: `Można używać NSFW tylko na kanałach oznaczonych jako NSFW!`, ephemeral: true });
             }
 
+            if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true });
+
             logger.debug({ message: `Executing command: ${interaction.commandName}`, });
             const usedCommand = command.run({ interaction, }).catch(err => logger.error({ message: `Slash command crashed`, err, }));
         }
-        else if (interaction.isContextMenuCommand()) {
-            logger.debug({ message: `Context menu interaction recrived: ${trace}`, });
+        else if (interaction.isMessageContextMenuCommand()) {
+            logger.debug({ message: `Message context menu interaction recrived: ${trace}`, });
 
             const { commandName } = interaction;
-            const command = client.commands.commandsExecutable.get(commandName) as ContextMenuCommandType;
+            const command = client.commands.commandsExecutable.get(commandName) as MessageCommandType;
             if (!command) return interaction.reply({ content: `tej komendy już nie ma nie używaj jej pls`, ephemeral: true });
+
+            if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true });
+
+            logger.debug({ message: `Executing command: ${interaction.commandName}`, });
+            const usedCommand = command.run({ interaction, }).catch(err => logger.error({ message: `Slash command crashed`, err, }));
+        }
+        else if (interaction.isUserContextMenuCommand()) {
+            logger.debug({ message: `Message context menu interaction recrived: ${trace}`, });
+
+            const { commandName } = interaction;
+            const command = client.commands.commandsExecutable.get(commandName) as UserCommandType;
+            if (!command) return interaction.reply({ content: `tej komendy już nie ma nie używaj jej pls`, ephemeral: true });
+
+            if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true });
 
             logger.debug({ message: `Executing command: ${interaction.commandName}`, });
             const usedCommand = command.run({ interaction, }).catch(err => logger.error({ message: `Slash command crashed`, err, }));
