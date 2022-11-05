@@ -14,12 +14,12 @@ export class Logger {
         this.writeDisabled = settings?.disableWriteStreams || false;
 
         this.writeStreams = {
-            latest: fs.createWriteStream(`${this.logDir}/latest.log`),
-            history: fs.createWriteStream(`${this.logDir}/${this.dateString}-history.log`),
+            latest: fs.createWriteStream(`${this.logDir}/latest-${process.env.ENV}.log`),
+            history: fs.createWriteStream(`${this.logDir}/${this.dateString}-${process.env.ENV}-history.log`),
         }
 
         if (!fs.existsSync(this.logDir)) fs.mkdirSync(this.logDir);
-        if (fs.existsSync(`${this.logDir}/latest.log`)) fs.rmSync(`${this.logDir}/latest.log`);
+        if (fs.existsSync(`${this.logDir}/latest-${process.env.ENV}.log`)) fs.rmSync(`${this.logDir}/latest-${process.env.ENV}.log`);
     }
 
     log({ level, message, color, silent, }: LogOptions) {
@@ -46,7 +46,7 @@ export class Logger {
     }
 
     debug({ message, color, silent = true }: OtherOptions) {
-        if (process.env.DEBUG_MODE === '1' || process.env.ENV === 'debug') silent = false;
+        if (process.env.DEBUG_MODE === '1') silent = false;
 
         return this.log({
             level: 'debug',
