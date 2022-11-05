@@ -8,6 +8,11 @@ export default new DistubeEvent(
         const interaction = distube.interactionShared.get(queue.id);
         distube.interactionShared.delete(queue.id);
 
+        playlist.songs.forEach(song => {
+            if (song.age_restricted) console.log(`song ${song.name} is age-restricted`);
+            if (song.chapters.length > 0) console.log(`Chaptery ${song.name}: ${song.chapters.join(', ')}`);
+        });
+
         const playlistSize = playlist.songs.length;
 
         let piosenek: string;

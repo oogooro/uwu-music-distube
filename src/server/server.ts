@@ -3,14 +3,16 @@ import http from 'http';
 import { Server } from 'socket.io';
 import { join } from 'path';
 import { client, logger } from '..';
-import { botSettingsDB } from '../structures/Database';
+import { botSettingsDB } from '../database/botSettings';
 import { ActivityType } from 'discord.js';
 
 export const app = express();
 export const server = http.createServer(app);
 export const io = new Server(server);
 
-const serverPagesPath = join(__dirname, '../../', 'serverPages')
+const PORT = process.env.ENV === 'dev' ? parseInt(process.env.PORT) + 3000 : process.env.PORT;
+
+const serverPagesPath = join(__dirname, '../../', 'serverPages');
 
 app.use('/', express.static(join(serverPagesPath, 'public')));
 
@@ -23,7 +25,7 @@ app.get('/api/:endpoint/:options?', (req, res) => {
 
     switch (endpoint) {
         case 'botInfo':
-            if(options) {
+            if (options) {
                 switch (options) {
                     case 'commands':
                         res.send(client.commands.payload);
@@ -38,9 +40,9 @@ app.get('/api/:endpoint/:options?', (req, res) => {
                         res.send(client.user);
                         break;
                     case 'settings':
-                        res.send(botSettingsDB.get('settings'));
+                        res.send(botSettingsDB.get(process.env.ENV));
                         break;
-                
+
                     default:
                         res.status(404).send({ message: 'endpoint option not found' });
                         break;
@@ -54,10 +56,11 @@ app.get('/api/:endpoint/:options?', (req, res) => {
                     commands: client.commands.payload,
                     guilds: client.guilds.cache,
                     users: client.users.cache,
+                    ENV: process.env.ENV,
                 });
             }
             break;
-            
+
         default:
             res.status(404).send({ message: 'endpoint not found' });
             break;
@@ -79,9 +82,9 @@ interface Settings {
 
 io.on('connection', (socket) => {
     socket.on('manageChangeSettings', (settings: Settings) => {
-        const config = botSettingsDB.get('settings');
+        const config = botSettingsDB.get(process.env.ENV);
 
-        botSettingsDB.set('settings', { ...config, ...settings });
+        botSettingsDB.set(process.env.ENV, { ...config, ...settings });
         client.updatePresence();
     });
 
@@ -91,10 +94,10 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(process.env.PORT, () => {
+server.listen(PORT, () => {
     logger.log({
         level: 'init',
-        message: `Started server at port ${process.env.PORT}`,
+        message: `Started server at port *:${PORT}`,
         color: 'cyan'
     });
 });

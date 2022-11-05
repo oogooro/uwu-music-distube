@@ -13,7 +13,7 @@ const intentFlags = IntentsBitField.Flags;
 
 const config: Config = {
     clientOptions: {
-        intents: [intentFlags.Guilds, intentFlags.GuildMembers, intentFlags.GuildVoiceStates],
+        intents: [intentFlags.Guilds, intentFlags.GuildVoiceStates],
     },
     distubeOptions: {
         searchSongs: 0,

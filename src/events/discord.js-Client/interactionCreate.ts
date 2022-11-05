@@ -1,7 +1,6 @@
 import { client } from '../..';
 import { DjsClientEvent } from '../../structures/DjsClientEvent';
-import { botSettingsDB } from '../../structures/Database';
-import { BotSettings } from '../../typings/database';
+import { botSettingsDB } from '../../database/botSettings';
 import { logger } from '../..';
 import { GuildMember, InteractionType } from 'discord.js';
 import { SlashCommandType } from '../../typings/slashCommand';
@@ -10,7 +9,7 @@ import { UserCommandType } from '../../typings/userCommand';
 import { MessageCommandType } from '../../typings/messageCommand';
 
 export default new DjsClientEvent('interactionCreate', async interaction => {
-    const { devs, online, }: BotSettings = botSettingsDB.get('settings');
+    const { devs, online, } = botSettingsDB.get(process.env.ENV);
     if (!online && !devs.includes(interaction.user.id)) return;
 
     const trace = generateInteractionTrace(interaction);

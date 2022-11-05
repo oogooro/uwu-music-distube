@@ -18,6 +18,18 @@ let listeners = {
 
 let page = '';
 
+axios.get('api/botInfo').then(res => {
+    const { data } = res;
+
+    const websiteTitle = document.querySelector('title');
+    const title = document.querySelector('#botTag');
+    const subtitle = document.querySelector('#subtitle');
+
+    websiteTitle.innerText = `${data.user.username} on ${data.ENV}`;
+    title.innerText = data.user.username;
+    subtitle.innerText = `${data.user.tag} running on ${data.ENV.toUpperCase()}`;
+});
+
 const pageFunctions = {
     status: () => {
         function updateStatus() {

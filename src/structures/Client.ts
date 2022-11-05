@@ -6,7 +6,7 @@ import { DjsClientEvent } from './DjsClientEvent';
 import { logger } from '..';
 import { Agent } from 'undici';
 import { AutomatedInteractionType } from '../typings/automatedInteraction';
-import { botSettingsDB } from './Database';
+import { botSettingsDB } from '../database/botSettings';
 
 const globPromise = promisify(glob);
 
@@ -35,11 +35,12 @@ export class ExtendedClient extends Client {
     public start() {
         logger.debug({ message: `Starting client...`, });
         this.init();
-        this.login(process.env.DISCORDBOT_TOKEN);
+        this.login(process.env.ENV === 'prod' ? process.env.DISCORDBOT_TOKEN : process.env.DISCORDBOT_DEV_TOKEN);
+        logger.debug({ message: `Client started`, });
     }
 
     public updatePresence() {
-        const { status, online, } = botSettingsDB.get('settings');
+        const { status, online, } = botSettingsDB.get(process.env.ENV);
         logger.debug({
             message: 'Updated presence',
             color: 'gray',

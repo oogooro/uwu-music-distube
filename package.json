@@ -7,6 +7,7 @@
     "dev": "cross-env ENV=\"dev\" ts-node src/index.ts",
     "start": "npm run build && npm run deploy",
     "deploy": "cross-env ENV=\"prod\" node --trace-warnings dist/index.js",
+    "deploydev": "cross-env ENV=\"dev\" node --trace-warnings dist/index.js",
     "build": "tsc",
     "cleanbuild": "rm -rfd dist && npm run build",
     "cleanstart": "npm run cleanbuild && npm run deploy"
@@ -32,7 +33,7 @@
   "devDependencies": {
     "@types/express": "^4.17.14",
     "@types/glob": "^8.0.0",
-    "@types/lodash": "^4.14.186",
+    "@types/lodash": "^4.14.188",
     "cross-env": "^7.0.3",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",

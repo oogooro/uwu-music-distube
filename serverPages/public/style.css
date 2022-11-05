@@ -67,6 +67,11 @@ body {
     display: block;
 }
 
+#subtitle {
+    padding-top: 15px;
+    font-size: 1rem;
+}
+
 .statusBox {
     background-color: #000;
     min-height: 40px;
