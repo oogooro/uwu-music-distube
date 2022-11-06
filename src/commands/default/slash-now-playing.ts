@@ -1,7 +1,8 @@
 import { client, distube, logger } from '../..';
 import { SlashCommand } from '../../structures/SlashCommand';
-import conifg from '../../config';
-import { formatTimeDisplay, songToDisplayString } from '../../utils';
+import config from '../../config';
+import { formatTimeDisplay, generateCustomId, songToDisplayString, trimString } from '../../utils';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, SelectMenuBuilder } from 'discord.js';
 
 
 export default new SlashCommand({
@@ -60,14 +61,67 @@ export default new SlashCommand({
             piosenek = 'piosenek';
         }
 
+        const moreInfoCustomId = generateCustomId('moreinfonp', interaction);
+
+        const collecor = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.Button, filter: (btn => btn.customId === moreInfoCustomId), idle: 300_000 /* 5min */ });
+
+        collecor.on('collect', btnInteraction => {
+            btnInteraction.reply({
+                embeds: [{
+                    title: trimString(song.name, 80),
+                    url: song.url,
+                    color: config.embedColor,
+                    fields: [
+                        { name: 'Kanał', value: `[${song.uploader.name}](${song.uploader.url})`, },
+                        { name: 'Wyświetlenia', value: Intl.NumberFormat('pl', { notation: 'compact', }).format(song.views), },
+                    ],
+                    thumbnail: {
+                        url: song.thumbnail,
+                    },
+                }],
+                ephemeral: true,
+            });
+        });
+
+        collecor.once('end', async () => {
+            const message = await interaction.fetchReply();
+
+            const disabledRows = message.components.reduce((a: ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[], row) => {
+                const components = row.toJSON().components.reduce((a: (ButtonBuilder | SelectMenuBuilder)[], component) => {
+                    let builder: (ButtonBuilder | SelectMenuBuilder) = (component.type === ComponentType.Button) ? ButtonBuilder.from(component) : SelectMenuBuilder.from(component);
+                    builder.setDisabled(true);
+                    a.push(builder);
+                    return a;
+                }, []);
+                const disabledRow = (components[0].data.type === ComponentType.Button) ?
+                    new ActionRowBuilder<ButtonBuilder>().addComponents(components as ButtonBuilder[]) :
+                    new ActionRowBuilder<SelectMenuBuilder>().addComponents(components as SelectMenuBuilder[]);
+                a.push(disabledRow);
+                return a;
+            }, []);
+
+            interaction.editReply({ components: disabledRows, })
+                .catch(err => logger.error({ err, message: 'brainfart', }));
+        });
+
         interaction.reply({
             embeds: [{
                 title: 'Teraz gra',
                 description: `${songToDisplayString(song)}\n\n\`${formatTimeDisplay(queue.currentTime)} / ${song.formattedDuration} ${progressString}\``,
-                color: conifg.embedColor,
+                color: config.embedColor,
                 footer: {
                     text: songsLeft === 0 ? `To jest ostatnia piosenka na kolejce` : `${pozostalo} jeszcze ${songsLeft} ${piosenek} na kolejce`,
                 },
+            }],
+            components: [{
+                type: ComponentType.ActionRow,
+                components: [{
+                    type: ComponentType.Button,
+                    customId: moreInfoCustomId,
+                    style: ButtonStyle.Secondary,
+                    label: 'Więcej informacji',
+                    emoji: '🔍',
+                }],
             }],
         }).catch(err => logger.error({ err, message: 'could not reply' }));
     },
