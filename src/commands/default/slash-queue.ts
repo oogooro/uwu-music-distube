@@ -13,7 +13,7 @@ export default new SlashCommand({
     },
     run: async ({ interaction, }) => {
         const queue = distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
 
         let page = 0;
         
@@ -28,7 +28,7 @@ export default new SlashCommand({
             const queue = distube.getQueue(interaction.guildId);
             if (!queue || !queue?.songs[0]) {
                 if (btnInteraction)
-                    return btnInteraction.update({ content: 'Kolejka już nie istnieje!', components: [], embeds: [], }).catch(err => logger.warn({ message: 'could not cum' }));
+                    return btnInteraction.update({ content: 'Kolejka już nie istnieje!', components: [], embeds: [], }).catch(err => logger.error({ err, message: 'could not update' }));  
                 else return;
             }
             

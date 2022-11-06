@@ -13,10 +13,10 @@ export default new SlashCommand({
         .catch(err => {
             logger.error({err, message: 'could not wsteczny', });
             interaction.reply({ content: 'Nie udało się cofnąć piosenki', ephemeral: true, })
-                .catch(err => logger.warn({ message: 'could no' }));
+                .catch(err => logger.error({ err, message: 'could not reply' }));  
         });
 
         interaction.reply({ content: `:track_previous: Cofnięto!` })
-            .catch(err => logger.warn({ message: 'could not just not' }));
+            .catch(err => logger.error({ err, message: 'could not reply' }));  
     },
 });

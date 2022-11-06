@@ -34,25 +34,25 @@ export default new SlashCommand({
 
         if (!channel)
             return interaction.reply({ content: 'Nie jesteś na żadnym kanale głosowym, ani kanał do dołączenia nie został podany!', ephemeral: true, })
-                .catch(err => logger.warn({ message: 'Could not replay', }));
+                .catch(err => logger.error({ err, message: 'could not reply' }));  
 
         if (channel.type === ChannelType.GuildVoice) {
             if (!channel.joinable) return interaction.reply({ content: 'Nie mam uprawnień, aby dołączyć na ten kanał głosowy!' })
-                .catch(err => logger.warn({ message: 'Could not replay', }));
+                .catch(err => logger.error({ err, message: 'could not reply' }));  
             if (!channel) return interaction.reply({ content: 'Nie mam uprawnień, aby mówić na tym kanale głosowym!' })
-                .catch(err => logger.warn({ message: 'Could not replay', }));
+                .catch(err => logger.error({ err, message: 'could not reply' }));  
 
             distube.voices.join(channel).catch((err) => {
                 logger.error({ err, message: 'Could not join voice channel' });
                 return interaction.reply({ content: 'Coś poszło nie tak i nie udało mi się dołączyć na kanał głosowy!', ephemeral: true, })
-                    .catch(err => logger.warn({ message: 'Could not replay', }));
+                    .catch(err => logger.error({ err, message: 'could not reply' }));  
             })
             .then(async () => {
                 interaction.reply({ content: `Dołączono na <#${channel.id}>!\nWbij na kanał głosowy i użyj </play:2137>, aby dodać piosenkę`, })
-                .catch(err => logger.warn({ message: 'Could not replay', }));
+                .catch(err => logger.error({ err, message: 'could not reply' }));  
             });
         }
         else return interaction.reply({ content: 'Na wybranym kanale nie można używać bota', ephemeral: true, })
-            .catch(err => logger.warn({ message: 'Could not replay', }));
+            .catch(err => logger.error({ err, message: 'could not reply' }));  
     },
 });

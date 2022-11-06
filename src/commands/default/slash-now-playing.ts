@@ -13,11 +13,11 @@ export default new SlashCommand({
     run: async ({ interaction }) => {
         const queue = distube.getQueue(interaction.guildId);
 
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!' }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!' }).catch(err => logger.error({ err, message: 'could not reply' }));  
 
         const [song] = queue?.songs;
         
-        if (!queue?.playing) return interaction.reply({ content: 'Aktualnie nic nie gra!' + song ? '' : 'Wskocz na kanał głosowy i użyj </play:2137>, aby rozkręcić imprezę!' }).catch(err => logger.warn({ message: 'Could not moja dupa' }));
+        if (!queue?.playing) return interaction.reply({ content: 'Aktualnie nic nie gra!' + song ? '' : 'Wskocz na kanał głosowy i użyj </play:2137>, aby rozkręcić imprezę!' }).catch(err => logger.error({ err, message: 'could not reply' }));  
 
         const PROGRESS_LENGHT: number = 40;
         const progress = Math.round(queue.currentTime / song.duration * PROGRESS_LENGHT);
@@ -69,6 +69,6 @@ export default new SlashCommand({
                     text: songsLeft === 0 ? `To jest ostatnia piosenka na kolejce` : `${pozostalo} jeszcze ${songsLeft} ${piosenek} na kolejce`,
                 },
             }],
-        }).catch(() => logger.warn({ message: 'Could not reply', }));
+        }).catch(err => logger.error({ err, message: 'could not reply' }));
     },
 });

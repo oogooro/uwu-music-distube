@@ -38,6 +38,6 @@ export default new SlashCommand({
 `;
 
         interaction.reply({ content, ephemeral: true, })
-            .catch(err => logger.warn({ message: 'Could not follow up', silent: false, }));
+            .catch(err => logger.error({ err, message: 'Could not follow up', }));
     },
 });

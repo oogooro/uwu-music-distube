@@ -34,12 +34,12 @@ export default new SlashCommand({
     vcOnly: true,
     run: async ({ interaction, }) => {
         const queue = distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
         const song1index = interaction.options.getInteger('song1');
         const song2index = interaction.options.getInteger('song2');
 
-        if (song1index > queue.songs.length) return interaction.reply({ content: 'Nie istnieje taki numer piosenki jaki został podany w opcji `piosenka1`!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
-        if (song2index > queue.songs.length) return interaction.reply({ content: 'Nie istnieje taki numer piosenki jaki został podany w opcji `piosenka2`!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (song1index > queue.songs.length) return interaction.reply({ content: 'Nie istnieje taki numer piosenki jaki został podany w opcji `piosenka1`!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
+        if (song2index > queue.songs.length) return interaction.reply({ content: 'Nie istnieje taki numer piosenki jaki został podany w opcji `piosenka2`!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
 
         const song1 = queue.songs[song1index];
         const song2 = queue.songs[song2index];

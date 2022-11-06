@@ -24,9 +24,9 @@ export default new SlashCommand({
     vcOnly: true,
     run: async ({ interaction }) => {
         const queue = distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
 
-        if (queue.songs[0].isLive) return interaction.reply({ content: 'Nie można przewijać live!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (queue.songs[0].isLive) return interaction.reply({ content: 'Nie można przewijać live!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
 
         const time = interaction.options.getString('time');
 
@@ -34,11 +34,11 @@ export default new SlashCommand({
 
         const timeSecs = ( (parseInt(hour) * 3600) || 0 ) + ( (parseInt(min) * 60) || 0 ) + (parseInt(sec));
         if (isNaN(timeSecs) || timeSecs < 0) return interaction.reply({ content: 'Nie potrafię rozczytać podani mi czas! Użyj formatu HH:MM:SS czyli np jak chcesz przewinąć do 8 minuty i 20 sekundy piosenki wpisz 8:20', ephemeral: true, })
-            .catch(() => logger.warn({ message: 'Could not reply', }));
+            .catch(err => logger.error({ err, message: 'could not reply' }));  
 
         const queueNew = distube.seek(interaction.guildId, timeSecs);
 
         interaction.reply({ content: `Przewinięto do \`${formatTimeDisplay(queueNew.currentTime)}\`!` })
-            .catch(() => logger.warn({ message: 'Could not reply', }));
+            .catch(err => logger.error({ err, message: 'could not reply' }));  
     },
 }); 

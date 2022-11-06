@@ -40,12 +40,12 @@ export default new SlashCommand({
     vcOnly: true,
     run: async ({ interaction, }) => {
         const queue = distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
         const songIndex = interaction.options.getInteger('song');
         const placeIndex = interaction.options.getInteger('place');
 
-        if (songIndex > queue.songs.length) return interaction.reply({ content: 'Nie istnieje taki numer piosenki jaki został podany w opcji `piosenka`!', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
-        if (placeIndex > queue.songs.length) return interaction.reply({ content: 'Numer `miejsce` za wysoki!\n(||tak już się poddałem||)', ephemeral: true, }).catch(err => logger.warn({ message: 'could not reply' }));
+        if (songIndex > queue.songs.length) return interaction.reply({ content: 'Nie istnieje taki numer piosenki jaki został podany w opcji `piosenka`!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
+        if (placeIndex > queue.songs.length) return interaction.reply({ content: 'Numer `miejsce` za wysoki!\n(||tak już się poddałem||)', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
         
         const song = queue.songs[songIndex];
 

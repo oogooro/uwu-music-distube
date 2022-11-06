@@ -1,5 +1,5 @@
 import { SlashCommand } from '../../structures/SlashCommand';
-import { client, distube } from '../..';
+import { client, distube, logger } from '../..';
 
 export default new SlashCommand({
     data: {
@@ -11,10 +11,10 @@ export default new SlashCommand({
         if (distube.getQueue(interaction.guildId)) distube.stop(interaction.guildId);
         const voice = distube.voices.get(interaction.guildId);
 
-        if (!voice) return interaction.reply({ content: 'Już jestem odłączony!', ephemeral: true, }).catch(() => {});
+        if (!voice) return interaction.reply({ content: 'Już jestem odłączony!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));
 
         voice.connection.destroy();
         
-        interaction.reply({ content: 'Odłączono!', }).catch(() => {});
+        interaction.reply({ content: 'Odłączono!', }).catch(err => logger.error({ err, message: 'could not reply' }));
     },
 }); 
