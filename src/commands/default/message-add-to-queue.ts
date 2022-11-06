@@ -2,7 +2,7 @@ import { APIEmbed, ApplicationCommandType, GuildMember } from 'discord.js';
 import { logger, distube } from '../..';
 import { MessageCommand } from '../../structures/MessageCommand';
 
-const ytLinkRe = /(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/\S+/g
+const ytLinkRe = /(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/[^)]+/g
 
 export default new MessageCommand({
     data: {
