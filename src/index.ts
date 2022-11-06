@@ -9,14 +9,19 @@ export const logger = new Logger({});
 export const client = new ExtendedClient(config.clientOptions);
 export const distube = new ExtendedDistube(config.distubeOptions);
 
-if (process.env.ENV) logger.log({
+if (!process.env.ENV) {
+    logger.log({
+        level: 'error',
+        message: 'ENVVAR ENV is not set! Aborting.',
+    });
+    process.exit(1);
+}
+
+logger.log({
     level: 'init',
     message: `Running on ${process.env.ENV}`,
     color: 'greenBright',
 });
-else logger.warn({ message: 'ENVVAR ENV is not set', });
-
-logger.debug({ message: `Client created`, });
 
 client.start();
 
