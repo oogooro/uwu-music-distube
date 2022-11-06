@@ -12,10 +12,14 @@ export default new MessageCommand({
     },
     vcOnly: true,
     run: async ({ interaction }) => {
-        const link = interaction.targetMessage.content.match(ytLinkRe)[0];
+        let matched = interaction.targetMessage.content.match(ytLinkRe);
+        if (!matched) matched = interaction.targetMessage.embeds[0]?.url?.match(ytLinkRe);
+        if (!matched) matched = interaction.targetMessage.embeds[0]?.description?.match(ytLinkRe);
 
-        if (!link) return interaction.reply({ content: 'W tej wiadomości nie ma linków do YouTube', ephemeral: true, })
+        if (!matched) return interaction.reply({ content: 'W tej wiadomości nie ma linków do YouTube', ephemeral: true, })
             .catch(err => logger.error({ err, message: 'Could not reply', }));
+
+        const [ link ] = matched;
 
         await interaction.deferReply().catch(err => logger.error({ err, message: 'Could not defer reply', }));
 
