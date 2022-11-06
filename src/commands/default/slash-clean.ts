@@ -4,7 +4,7 @@ import { SlashCommand } from '../../structures/SlashCommand';
 export default new SlashCommand({
     data: {
         name: 'clean',
-        description: 'Czyszczenie kolejki ze wszystkich piosenek',
+        description: 'Zatrzymuje i czyści kolejkę',
         dmPermission: false,
     },
     vcOnly: true,
@@ -12,7 +12,7 @@ export default new SlashCommand({
         const queue = distube.getQueue(interaction.guildId);
         if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
 
-        queue.songs = [queue.songs[0]];
+        queue.stop().catch(err => logger.error({ err, message: 'could not stop' }));
 
         interaction.reply({ content: 'Wyczyszczono całą kolejkę!' }).catch(err => logger.error({ err, message: 'could not reply' }));      
     },
