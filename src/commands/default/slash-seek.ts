@@ -36,7 +36,8 @@ export default new SlashCommand({
         if (isNaN(timeSecs) || timeSecs < 0) return interaction.reply({ content: 'Nie potrafię rozczytać podani mi czas! Użyj formatu HH:MM:SS czyli np jak chcesz przewinąć do 8 minuty i 20 sekundy piosenki wpisz 8:20', ephemeral: true, })
             .catch(err => logger.error({ err, message: 'could not reply' }));  
 
-        const queueNew = distube.seek(interaction.guildId, timeSecs);
+        const queueNew = queue.seek(timeSecs);
+        if (queue.paused) queue.paused = false;   // distube glitch bypass
 
         interaction.reply({ content: `Przewinięto do \`${formatTimeDisplay(queueNew.currentTime)}\`!` })
             .catch(err => logger.error({ err, message: 'could not reply' }));  
