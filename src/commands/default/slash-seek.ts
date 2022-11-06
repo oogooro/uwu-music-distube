@@ -81,9 +81,9 @@ export default new SlashCommand({
         if (!queue.songs[0].chapters) return interaction.respond([]);
         const focused = interaction.options.getFocused().trim();
 
-        if (!focused) return interaction.respond(queue.songs[0].chapters.slice(0, 24).map(ch => { return { name: `${trimString(ch.title)} - ${formatTimeDisplay(ch.start_time)}`, value: ch.start_time.toString() } } )); // queue.songs[0].chapters.slice(0, 24)
+        if (!focused) return interaction.respond(queue.songs[0].chapters.slice(0, 24).map(ch => { return { name: `${trimString(ch.title, 80)} - ${formatTimeDisplay(ch.start_time)}`, value: ch.start_time.toString() } } )); // queue.songs[0].chapters.slice(0, 24)
 
         const filtered = queue.songs[0].chapters.filter(ch => ch.title.toLowerCase().includes(focused.toLocaleLowerCase()) );
-        interaction.respond(filtered.slice(0, 24).map(ch => { return { name: `${trimString(ch.title)} - ${formatTimeDisplay(ch.start_time)}`, value: ch.start_time.toString() } }));
+        interaction.respond(filtered.slice(0, 24).map(ch => { return { name: `${trimString(ch.title, 80)} - ${formatTimeDisplay(ch.start_time)}`, value: ch.start_time.toString() } }));
     },
 }); 
