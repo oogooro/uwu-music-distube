@@ -29,3 +29,8 @@ export function formatTimeDisplay(totalSeconds: number): string {
 
     return `${hours ? `${hours}:` : ''}${padTo2Digits(minutes)}:${padTo2Digits(seconds)}`;
 }
+
+export function trimString(s: string): string {
+    const STRING_SIZE = 80;
+    return s.length > STRING_SIZE ? s.substring(0, STRING_SIZE - 3).trim() + "..." : s;
+}
