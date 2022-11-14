@@ -1,4 +1,4 @@
-import { client } from '../..';
+import { client, distube } from '../..';
 import { DjsClientEvent } from '../../structures/DjsClientEvent';
 import { botSettingsDB } from '../../database/botSettings';
 import { logger } from '../..';
@@ -14,27 +14,29 @@ export default new DjsClientEvent('interactionCreate', async interaction => {
 
     const trace = generateInteractionTrace(interaction);
     const loggerThread = logger.startThread();
+    const queue = distube.getQueue(interaction.guildId);
     if (interaction.type === InteractionType.ApplicationCommand) {
         const member = interaction.member as GuildMember;
         if (interaction.isChatInputCommand()) {
             loggerThread.debug(`Slash command interaction recrived: ${trace}`);
-
+            
             const { commandName } = interaction;
             const command = client.commands.commandsExecutable.get(commandName) as SlashCommandType;
-            if (!command) return interaction.reply({ content: `tej komendy już nie ma nie używaj jej pls`, ephemeral: true });
-
-            if (command.dev && !devs.includes(interaction.user.id)) return interaction.reply({ content: `Ta komenda jest przeznaczona tylko dla devów nie używaj jej pls`, ephemeral: true });
+            if (!command) return interaction.reply({ content: `tej komendy już nie ma nie używaj jej pls`, ephemeral: true }).catch(err => loggerThread.error(err));
+            
+            if (command.dev && !devs.includes(interaction.user.id)) return interaction.reply({ content: `Ta komenda jest przeznaczona tylko dla devów nie używaj jej pls`, ephemeral: true }).catch(err => loggerThread.error(err));
             if (command.nsfw) {
                 if ('nsfw' in interaction.channel && !interaction.channel.nsfw)
-                    return interaction.reply({ content: `Można używać NSFW tylko na kanałach oznaczonych jako NSFW!`, ephemeral: true });
-                else if (interaction.channel.isThread() && !interaction.channel.parent.nsfw)
-                    return interaction.reply({ content: `Można używać NSFW tylko na kanałach oznaczonych jako NSFW!`, ephemeral: true });
+                    return interaction.reply({ content: `Można używać NSFW tylko na kanałach oznaczonych jako NSFW!`, ephemeral: true }).catch(err => loggerThread.error(err));
+                    else if (interaction.channel.isThread() && !interaction.channel.parent.nsfw)
+                    return interaction.reply({ content: `Można używać NSFW tylko na kanałach oznaczonych jako NSFW!`, ephemeral: true }).catch(err => loggerThread.error(err));
             }
-
+            
+            if (command.queueRequired && (!queue || !queue?.songs[0])) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => loggerThread.error(err));
             if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true });
 
             loggerThread.debug(`Executing command: ${interaction.commandName}`);
-            command.run({ interaction, logger: loggerThread })
+            command.run({ interaction, logger: loggerThread, queue })
                 .catch(err => loggerThread.error(err))
                 .finally(() => loggerThread.end());
         }
@@ -43,12 +45,13 @@ export default new DjsClientEvent('interactionCreate', async interaction => {
 
             const { commandName } = interaction;
             const command = client.commands.commandsExecutable.get(commandName) as MessageCommandType;
-            if (!command) return interaction.reply({ content: `tej komendy już nie ma nie używaj jej pls`, ephemeral: true });
+            if (!command) return interaction.reply({ content: `tej komendy już nie ma nie używaj jej pls`, ephemeral: true }).catch(err => loggerThread.error(err));
 
-            if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true });
+            if (command.queueRequired && (!queue || !queue?.songs[0])) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => loggerThread.error(err));
+            if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true }).catch(err => loggerThread.error(err));
 
             loggerThread.debug(`Executing command: ${interaction.commandName}`);
-            command.run({ interaction, logger: loggerThread })
+            command.run({ interaction, logger: loggerThread, queue, })
                 .catch(err => loggerThread.error(err))
                 .finally(() => loggerThread.end());
         }
@@ -57,12 +60,13 @@ export default new DjsClientEvent('interactionCreate', async interaction => {
 
             const { commandName } = interaction;
             const command = client.commands.commandsExecutable.get(commandName) as UserCommandType;
-            if (!command) return interaction.reply({ content: `tej komendy już nie ma nie używaj jej pls`, ephemeral: true });
+            if (!command) return interaction.reply({ content: `tej komendy już nie ma nie używaj jej pls`, ephemeral: true }).catch(err => loggerThread.error(err));
             
-            if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true });
+            if (command.queueRequired && (!queue || !queue?.songs[0])) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => loggerThread.error(err));
+            if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true }).catch(err => loggerThread.error(err));
 
             loggerThread.debug(`Executing command: ${interaction.commandName}`);
-            command.run({ interaction, logger: loggerThread })
+            command.run({ interaction, logger: loggerThread, queue })
                 .catch(err => loggerThread.error(err))
                 .finally(() => loggerThread.end());
         }
@@ -72,7 +76,7 @@ export default new DjsClientEvent('interactionCreate', async interaction => {
         const { commandName } = interaction;
         const command = client.commands.commandsExecutable.get(commandName) as SlashCommandType;
         if (!command.getAutocompletes) return;
-        command.getAutocompletes({ interaction, logger: loggerThread })
+        command.getAutocompletes({ interaction, logger: loggerThread, queue })
             .catch(err => loggerThread.error(err))
             .finally(() => loggerThread.end());
     }

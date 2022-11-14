@@ -22,11 +22,9 @@ export default new SlashCommand({
         dmPermission: false,
     },
     vcOnly: true,
-    run: async ({ interaction, logger }) => {
+    queueRequired: true,
+    run: async ({ interaction, logger, queue }) => {
         const num = interaction.options.getInteger('number');
-        
-        const queue = distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error(err));;  
         
         if (num < 1) return interaction.reply({ content: 'Piosenka z takim numerem nie może istnieć', ephemeral: true, }).catch(err => logger.error(err));;  
         if (num > queue.songs.length) return interaction.reply({ content: 'Nie ma piosenki z takim numerem na kolejce', ephemeral: true, }).catch(err => logger.error(err));;  

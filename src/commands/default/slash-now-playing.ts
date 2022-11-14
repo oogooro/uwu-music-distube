@@ -11,11 +11,8 @@ export default new SlashCommand({
         description: 'Zobacz co aktualnie gra na serwerze',
         dmPermission: false,
     },
-    run: async ({ interaction, logger }) => {
-        const queue = distube.getQueue(interaction.guildId);
-
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!' }).catch(err => logger.error(err));;  
-
+    queueRequired: true,
+    run: async ({ interaction, logger, queue }) => {
         const [song] = queue?.songs;
         
         if (!queue?.playing) return interaction.reply({ content: 'Aktualnie nic nie gra!' + song ? '' : 'Wskocz na kanał głosowy i użyj </play:2137>, aby rozkręcić imprezę!' }).catch(err => logger.error(err));;  

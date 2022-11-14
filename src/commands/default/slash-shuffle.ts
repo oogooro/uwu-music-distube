@@ -8,6 +8,7 @@ export default new SlashCommand({
         dmPermission: false,
     },
     vcOnly: true,
+    queueRequired: true,
     run: async ({ interaction, logger }) => {
         distube.shuffle(interaction.guildId)
             .then(() => {

@@ -11,10 +11,8 @@ export default new SlashCommand({
         description: 'Wyświetla kolejkę serwera',
         dmPermission: false,
     },
-    run: async ({ interaction, logger }) => {
-        const queue = distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error(err));;  
-
+    queueRequired: true,
+    run: async ({ interaction, logger, queue }) => {
         let page = 0;
         
         const customIds = {

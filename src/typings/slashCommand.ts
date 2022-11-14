@@ -1,14 +1,17 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction, ChatInputApplicationCommandData } from 'discord.js';
+import { Queue } from 'distube';
 import { LoggerThread } from 'log4uwu';
 
 interface RunOptions {
     interaction: ChatInputCommandInteraction;
     logger: LoggerThread;
+    queue: Queue;
 }
 
 interface RunOptionsAutocomplete {
     interaction: AutocompleteInteraction;
     logger: LoggerThread;
+    queue: Queue;
 }
 
 type RunFunction = (options: RunOptions) => Promise<any>;
@@ -21,6 +24,7 @@ export type SlashCommandType = {
     global?: boolean;
     nsfw?: boolean;
     vcOnly?: boolean;
+    queueRequired?: boolean;
     run: RunFunction;
     getAutocompletes?: RunFunctionAutocomplete;
 };

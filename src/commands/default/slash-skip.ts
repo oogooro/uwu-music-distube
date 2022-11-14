@@ -20,11 +20,9 @@ export default new SlashCommand({
         dmPermission: false,
     },
     vcOnly: true,
-    run: async ({ interaction, logger }) => {
+    queueRequired: true,
+    run: async ({ interaction, logger, queue }) => {
         const num = interaction.options.getInteger('to');
-
-        const queue = distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error(err));;  
 
         if (!num) {
             if (!queue.songs[1]) {
