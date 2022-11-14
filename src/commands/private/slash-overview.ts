@@ -1,4 +1,4 @@
-import { logger, client } from "../..";
+import { client } from "../..";
 import { SlashCommand } from "../../structures/SlashCommand";
 
 export default new SlashCommand({
@@ -7,7 +7,7 @@ export default new SlashCommand({
         description: '[DEV] Status bota',
     },
     dev: true,
-    run: async ({ interaction, }) => {
+    run: async ({ interaction, logger }) => {
         const commandArray: string[] = [];
         const publicCommandsArray: string[] = [];
         const privateCommandsArray: string[] = [];
@@ -38,6 +38,6 @@ export default new SlashCommand({
 `;
 
         interaction.reply({ content, ephemeral: true, })
-            .catch(err => logger.error({ err, message: 'Could not follow up', }));
+            .catch(err => logger.error(err));
     },
 });

@@ -33,18 +33,15 @@ export class ExtendedClient extends Client {
     }
 
     public start() {
-        logger.debug({ message: `Starting client...`, });
+        logger.debug('Starting client...');
         this.init();
         this.login(process.env.ENV === 'prod' ? process.env.DISCORDBOT_TOKEN : process.env.DISCORDBOT_DEV_TOKEN);
-        logger.debug({ message: `Client started`, });
+        logger.debug('Client started');
     }
 
     public updatePresence() {
         const { status, online, } = botSettingsDB.get(process.env.ENV);
-        logger.debug({
-            message: 'Updated presence',
-            color: 'gray',
-        });
+        logger.debug('Updated presence');
 
         this.user.setPresence({
             activities: status.visible ? status.data : [],
@@ -56,9 +53,7 @@ export class ExtendedClient extends Client {
         return new Promise((resolve, reject) => {
             this.application.commands.set(commands)
                 .then(res => resolve(logger.log({ level: 'info', message: `Globally registered ${res.size} commands`, color: 'gray', })))
-                .catch(err => {
-                    reject(logger.error({ message: `Could not register commands`, err, }));
-                });
+                .catch(reject);
         });
     }
 
@@ -66,14 +61,12 @@ export class ExtendedClient extends Client {
         return new Promise(async (resolve, reject) => {
             (await this.guilds.fetch(guild)).commands.set(commands)
                 .then(res => resolve(logger.log({ level: 'info', message: `Registered ${res.size} commands to ${guild}`, silent, })))
-                .catch(err => {
-                    reject(logger.error({ message: `Could not register commands to ${guild}`, err, }));
-                });
+                .catch(reject);
         });
     }
 
     private async importFile(filePath: string) {
-        return (await import(filePath).catch(err => logger.error({ message: `Could not get ${filePath}`, err, })))?.default;
+        return (await import(filePath).catch(err => logger.error(err)))?.default;
     }
 
     private async init() {

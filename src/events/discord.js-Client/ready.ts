@@ -6,7 +6,7 @@ import { io } from '../../server/server';
 export default new DjsClientEvent('ready', async () => {
     const { online, } = botSettingsDB.get(process.env.ENV);
 
-    if (!process.env.BOT_GUILD_ID) logger.warn({ message: 'ENVVAR BOT_GUILD_ID is not set.', });
+    if (!process.env.BOT_GUILD_ID) logger.log({ level: 'warn', message: 'ENVVAR BOT_GUILD_ID is not set.', color: 'yellowBright', });
 
     logger.log({
         level: 'init',

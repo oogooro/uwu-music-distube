@@ -35,6 +35,6 @@ export default new DistubeEvent(
                 description: `${playlistSize} ${piosenek} z [${playlist.name}](${playlist.url})\n(dodane przez: <@${playlist.user.id}>)`,
                 color: config.embedColor,
             }],
-        }).catch(err => logger.error({ err, message: 'Could not edit reply', }));
+        }).catch(err => logger.error(err));
     }
 );

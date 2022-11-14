@@ -17,7 +17,7 @@ export default class ExtendedDistube extends DisTube {
     }
 
     private async importFile(filePath: string) {
-        return (await import(filePath).catch(err => logger.error({ message: `Could not get ${filePath}`, err, })))?.default;
+        return (await import(filePath).catch(err => logger.error(err)))?.default;
     }
 
     private async init(): Promise<void> {

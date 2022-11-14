@@ -1,6 +1,5 @@
 import { ComponentType, ModalComponentData, TextInputStyle } from 'discord.js';
 import { SlashCommand } from '../../structures/SlashCommand';
-import { logger } from '../..';
 
 export default new SlashCommand({
     data: {
@@ -8,7 +7,7 @@ export default new SlashCommand({
         description: '[DEV] eval'
     },
     dev: true,
-    run: async ({ interaction, }) => {
+    run: async ({ interaction, logger }) => {
         const modal: ModalComponentData = {
             title: 'Eval',
             customId: 'eval',
@@ -30,6 +29,6 @@ export default new SlashCommand({
         }
 
         interaction.showModal(modal)
-            .catch(err => logger.error({ err, message: 'Failed to show modal', }));
+            .catch(err => logger.error(err));
     },
 });

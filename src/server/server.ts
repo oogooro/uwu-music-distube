@@ -89,8 +89,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('buttonClick', (button) => {
-        if (button === 'global') client.registerCommandsGlobally(client.commands.payload.global).catch(err => logger.error({ err, message: 'Could not register global commands' }));
-        else client.registerCommands(client.commands.payload.allCommands, process.env.BOT_GUILD_ID, false).catch(err => logger.error({ err, message: 'Could not register commands' }));
+        if (button === 'global') client.registerCommandsGlobally(client.commands.payload.global).catch(err => logger.error(err));
+        else client.registerCommands(client.commands.payload.allCommands, process.env.BOT_GUILD_ID, false).catch(err => logger.error(err));
     });
 });
 

@@ -6,7 +6,7 @@ export default new SlashCommand({
         description: 'uh oh stinky',
     },
     dev: true,
-    run: async ({ interaction, }) => {
+    run: async ({ interaction, logger }) => {
         throw new Error('kontrolowany crash');
     },
 });

@@ -19,6 +19,6 @@ export default new DistubeEvent(
                 description: songToDisplayString(song),
                 color: config.embedColor,
             }],
-        }).catch(err => logger.error({ err, message: 'Could not edit reply', }));
+        }).catch(err => logger.error(err));
     }
 );

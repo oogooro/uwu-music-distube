@@ -1,7 +1,9 @@
 import { MessageApplicationCommandData, MessageContextMenuCommandInteraction } from 'discord.js';
+import { LoggerThread } from 'log4uwu';
 
 interface RunOptions {
     interaction: MessageContextMenuCommandInteraction;
+    logger: LoggerThread;
 }
 
 type RunFunction = (options: RunOptions) => Promise<any>;

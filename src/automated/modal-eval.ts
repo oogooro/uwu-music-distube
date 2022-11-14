@@ -1,14 +1,13 @@
 import { InteractionType } from 'discord.js';
-import { logger } from '..';
 import { AutomatedInteraction } from '../structures/AutomatedInteraction';
 
 export default new AutomatedInteraction({
     type: InteractionType.ModalSubmit,
     name: 'eval',
-    run: async interaction => {
+    run: async ({ interaction, logger }) => {
         let code = interaction.fields.getTextInputValue('code');
 
-        code = `const { client, logger } = __1;\n${code}`;
+        code = `const { client } = __1;\n${code}`;
         try {
             eval(code);
             interaction.reply({ content: 'Wykonano podany kod', ephemeral: true, });

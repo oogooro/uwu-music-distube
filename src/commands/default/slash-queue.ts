@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, InteractionReplyOptions, InteractionUpdateOptions, MessageActionRowComponent, SelectMenuBuilder } from 'discord.js';
 import { RepeatMode } from 'distube';
-import { client, distube, logger } from '../..';
+import { client, distube } from '../..';
 import { SlashCommand } from '../../structures/SlashCommand';
 import config from '../../config';
 import { generateCustomId, songToDisplayString } from '../../utils';
@@ -11,9 +11,9 @@ export default new SlashCommand({
         description: 'Wyświetla kolejkę serwera',
         dmPermission: false,
     },
-    run: async ({ interaction, }) => {
+    run: async ({ interaction, logger }) => {
         const queue = distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error(err));;  
 
         let page = 0;
         
@@ -28,7 +28,7 @@ export default new SlashCommand({
             const queue = distube.getQueue(interaction.guildId);
             if (!queue || !queue?.songs[0]) {
                 if (btnInteraction)
-                    return btnInteraction.update({ content: 'Kolejka już nie istnieje!', components: [], embeds: [], }).catch(err => logger.error({ err, message: 'could not update' }));  
+                    return btnInteraction.update({ content: 'Kolejka już nie istnieje!', components: [], embeds: [], }).catch(err => logger.error(err));
                 else return;
             }
             
@@ -133,9 +133,9 @@ export default new SlashCommand({
             }
 
             if (!btnInteraction) interaction.reply(content as InteractionReplyOptions)
-                .catch(err => logger.error({ message: 'could not reply (update())', err, }));
+                .catch(err => logger.error(err));
             else btnInteraction.update(content as InteractionUpdateOptions)
-                .catch(err => logger.error({ message: 'Could not update button interaction', err, }));
+                .catch(err => logger.error(err));
         }
         update();
 
@@ -169,7 +169,7 @@ export default new SlashCommand({
             }, []);
 
             interaction.editReply({ components: disabledRows, })
-                .catch(err => logger.error({ err, message: 'brainfart', }));
+                .catch(err => logger.error(err));
         });
 
     },

@@ -1,6 +1,6 @@
 import { APIEmbed, ApplicationCommandOptionType, GuildMember } from 'discord.js';
 import { SlashCommand } from '../../structures/SlashCommand';
-import { client, distube, logger } from '../..';
+import { client, distube } from '../..';
 
 export default new SlashCommand({
     data: {
@@ -44,13 +44,13 @@ export default new SlashCommand({
         dmPermission: false,
 },
     vcOnly: true,
-    run: async ({ interaction }) => {
+    run: async ({ interaction, logger }) => {
         const string = interaction.options.getString('song');
         const position = interaction.options.getBoolean('next') ? 1 : 0;
         const skip = interaction.options.getBoolean('skip');
         const shuffle = interaction.options.getBoolean('shuffle');
 
-        await interaction.deferReply().catch(err => logger.error({ err, message: 'Could not edit reply', }));
+        await interaction.deferReply().catch(err => logger.error(err));
 
         distube.interactionShared.set(interaction.guildId, interaction);
         distube.errorChannel.set(interaction.guildId, interaction.channel);
@@ -73,7 +73,7 @@ export default new SlashCommand({
             }
         })
         .catch(err => {
-            logger.error({ err, message: 'bruh', });
+            logger.error(err);
 
             const content = err.message.toLowerCase().includes('nsfw') ? 'Nie udało się dodać piosenki, bo Youtube nie pozwala odtwarzać piosenek 18+ bez zalogowania się' : 'Coś poszło nie tak i nie można zagrać muzyki ||(skill issue distube)||';
             
@@ -84,7 +84,7 @@ export default new SlashCommand({
             }
             
             return interaction.editReply({ embeds: [embed], })
-                .catch(err => logger.error({ err, message: 'Could not edit reply', }));
+                .catch(err => logger.error(err));
         });
     },
 });

@@ -1,4 +1,4 @@
-import { client, distube, logger } from '../..';
+import { client, distube } from '../..';
 import { SlashCommand } from '../../structures/SlashCommand';
 
 export default new SlashCommand({
@@ -8,9 +8,9 @@ export default new SlashCommand({
         dmPermission: false,
     },
     vcOnly: true,
-    run: async ({ interaction, }) => {
+    run: async ({ interaction, logger }) => {
         const queue = distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error(err));;  
         
         if (queue.paused) {
             distube.resume(interaction.guildId);

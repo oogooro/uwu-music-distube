@@ -1,5 +1,5 @@
 import { SlashCommand } from '../../structures/SlashCommand';
-import { client, distube, logger } from '../..';
+import { client, distube } from '../..';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { formatTimeDisplay, trimString } from '../../utils';
 
@@ -43,11 +43,11 @@ export default new SlashCommand({
         dmPermission: false,
     },
     vcOnly: true,
-    run: async ({ interaction }) => {
+    run: async ({ interaction, logger }) => {
         const queue = distube.getQueue(interaction.guildId);
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => logger.error(err));;  
 
-        if (queue.songs[0].isLive) return interaction.reply({ content: 'Nie można przewijać live!', ephemeral: true, }).catch(err => logger.error({ err, message: 'could not reply' }));  
+        if (queue.songs[0].isLive) return interaction.reply({ content: 'Nie można przewijać live!', ephemeral: true, }).catch(err => logger.error(err));;  
 
         let seekTime = -1;
 
@@ -58,14 +58,14 @@ export default new SlashCommand({
     
             const timeSecs = ( (parseInt(hour) * 3600) || 0 ) + ( (parseInt(min) * 60) || 0 ) + (parseInt(sec));
             if (isNaN(timeSecs) || timeSecs < 0) return interaction.reply({ content: 'Nie potrafię rozczytać podani mi czas! Użyj formatu HH:MM:SS czyli np jak chcesz przewinąć do 8 minuty i 20 sekundy piosenki wpisz 8:20', ephemeral: true, })
-                .catch(err => logger.error({ err, message: 'could not reply' }));  
+                .catch(err => logger.error(err));;  
     
             seekTime = timeSecs;
         } else {
             const time = parseInt(interaction.options.getString('chapter'));
 
             if (isNaN(time) || time < 0) return interaction.reply({ content: 'Nie można przewinąć do podanego chapteru', ephemeral: true, })
-                .catch(err => logger.error({ err, message: 'could not reply' }));
+                .catch(err => logger.error(err));;
             seekTime = time;
         }
 
@@ -73,9 +73,9 @@ export default new SlashCommand({
         if (queue.paused) queue.paused = false;   // distube glitch bypass
 
         interaction.reply({ content: `Przewinięto do \`${formatTimeDisplay(queueNew.currentTime)}\`!` })
-            .catch(err => logger.error({ err, message: 'could not reply' }));
+            .catch(err => logger.error(err));;
     },
-    getAutocompletes: async ({ interaction }) => {
+    getAutocompletes: async ({ interaction, logger }) => {
         const queue = distube.getQueue(interaction.guildId);
         if (!queue || !queue?.songs[0]) return interaction.respond([]);
         if (!queue.songs[0].chapters) return interaction.respond([]);

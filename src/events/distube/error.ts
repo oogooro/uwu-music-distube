@@ -3,10 +3,7 @@ import { DistubeEvent } from '../../structures/DistubeEvent';
 
 export default new DistubeEvent(
     'error',
-    async (channel, err: any/*skill issue*/) => {
-        logger.error({
-            err,
-            message: 'Distube kurwa error',
-        });
+    async (channel, err: Error/*skill issue*/) => {
+        logger.error(err);
     }
 );

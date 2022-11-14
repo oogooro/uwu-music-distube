@@ -1,4 +1,4 @@
-import { client, distube, logger } from '../..';
+import { client, distube } from '../..';
 import { SlashCommand } from '../../structures/SlashCommand';
 import config from '../../config';
 import { formatTimeDisplay, generateCustomId, songToDisplayString, trimString } from '../../utils';
@@ -11,14 +11,14 @@ export default new SlashCommand({
         description: 'Zobacz co aktualnie gra na serwerze',
         dmPermission: false,
     },
-    run: async ({ interaction }) => {
+    run: async ({ interaction, logger }) => {
         const queue = distube.getQueue(interaction.guildId);
 
-        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!' }).catch(err => logger.error({ err, message: 'could not reply' }));  
+        if (!queue || !queue?.songs[0]) return interaction.reply({ content: 'Kolejka nie istnieje!' }).catch(err => logger.error(err));;  
 
         const [song] = queue?.songs;
         
-        if (!queue?.playing) return interaction.reply({ content: 'Aktualnie nic nie gra!' + song ? '' : 'Wskocz na kanał głosowy i użyj </play:2137>, aby rozkręcić imprezę!' }).catch(err => logger.error({ err, message: 'could not reply' }));  
+        if (!queue?.playing) return interaction.reply({ content: 'Aktualnie nic nie gra!' + song ? '' : 'Wskocz na kanał głosowy i użyj </play:2137>, aby rozkręcić imprezę!' }).catch(err => logger.error(err));;  
 
         const PROGRESS_LENGHT: number = 40;
         const progress = Math.round(queue.currentTime / song.duration * PROGRESS_LENGHT);
@@ -101,7 +101,7 @@ export default new SlashCommand({
             }, []);
 
             interaction.editReply({ components: disabledRows, })
-                .catch(err => logger.error({ err, message: 'brainfart', }));
+                .catch(err => logger.error(err));
         });
 
         interaction.reply({
@@ -123,6 +123,6 @@ export default new SlashCommand({
                     emoji: '🔍',
                 }],
             }],
-        }).catch(err => logger.error({ err, message: 'could not reply' }));
+        }).catch(err => logger.error(err));;
     },
 });

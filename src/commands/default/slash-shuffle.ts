@@ -1,4 +1,4 @@
-import { client, distube, logger } from '../..';
+import { client, distube } from '../..';
 import { SlashCommand } from '../../structures/SlashCommand';
 
 export default new SlashCommand({
@@ -8,16 +8,16 @@ export default new SlashCommand({
         dmPermission: false,
     },
     vcOnly: true,
-    run: async ({ interaction, }) => {
+    run: async ({ interaction, logger }) => {
         distube.shuffle(interaction.guildId)
             .then(() => {
                 interaction.reply({ content: ':twisted_rightwards_arrows: Przetasowano piosenki!' })
-                    .catch(err => logger.error({ err, message: 'could not reply' }));  
+                    .catch(err => logger.error(err));;  
             })
             .catch(err => {
-                logger.error({ err, message: 'shufla sie wyjebala' });
+                logger.error(err);
                 interaction.reply({ content: 'Nie udało się przetasować piosenek!', ephemeral: true, })
-                    .catch(err => logger.error({ err, message: 'could not reply' }));  
+                    .catch(err => logger.error(err));;  
             });
     },
 });
