@@ -34,25 +34,25 @@ export default new SlashCommand({
 
         if (!channel)
             return interaction.reply({ content: 'Nie jesteś na żadnym kanale głosowym, ani kanał do dołączenia nie został podany!', ephemeral: true, })
-                .catch(err => logger.error(err));;  
+                .catch(err => logger.error(err));  
 
         if (channel.type === ChannelType.GuildVoice) {
             if (!channel.joinable) return interaction.reply({ content: 'Nie mam uprawnień, aby dołączyć na ten kanał głosowy!' })
-                .catch(err => logger.error(err));;  
+                .catch(err => logger.error(err));  
             if (!channel) return interaction.reply({ content: 'Nie mam uprawnień, aby mówić na tym kanale głosowym!' })
-                .catch(err => logger.error(err));;  
+                .catch(err => logger.error(err));  
 
             distube.voices.join(channel).catch((err) => {
                 logger.error(err);
                 return interaction.reply({ content: 'Coś poszło nie tak i nie udało mi się dołączyć na kanał głosowy!', ephemeral: true, })
-                    .catch(err => logger.error(err));;  
+                    .catch(err => logger.error(err));
             })
             .then(async () => {
                 interaction.reply({ content: `Dołączono na <#${channel.id}>!\nWbij na kanał głosowy i użyj </play:2137>, aby dodać piosenkę`, })
-                .catch(err => logger.error(err));;  
+                .catch(err => logger.error(err));
             });
         }
         else return interaction.reply({ content: 'Na wybranym kanale nie można używać bota', ephemeral: true, })
-            .catch(err => logger.error(err));;  
+            .catch(err => logger.error(err));
     },
 });

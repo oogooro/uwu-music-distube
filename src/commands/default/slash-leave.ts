@@ -11,10 +11,10 @@ export default new SlashCommand({
         if (distube.getQueue(interaction.guildId)) distube.stop(interaction.guildId);
         const voice = distube.voices.get(interaction.guildId);
 
-        if (!voice) return interaction.reply({ content: 'Już jestem odłączony!', ephemeral: true, }).catch(err => logger.error(err));;
+        if (!voice) return interaction.reply({ content: 'Już jestem odłączony!', ephemeral: true, }).catch(err => logger.error(err));
 
         voice.connection.destroy();
         
-        interaction.reply({ content: 'Odłączono!', }).catch(err => logger.error(err));;
+        interaction.reply({ content: 'Odłączono!', }).catch(err => logger.error(err));
     },
 }); 

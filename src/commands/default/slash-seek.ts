@@ -45,7 +45,7 @@ export default new SlashCommand({
     vcOnly: true,
     queueRequired: true,
     run: async ({ interaction, logger, queue }) => {
-        if (queue.songs[0].isLive) return interaction.reply({ content: 'Nie można przewijać live!', ephemeral: true, }).catch(err => logger.error(err));;  
+        if (queue.songs[0].isLive) return interaction.reply({ content: 'Nie można przewijać live!', ephemeral: true, }).catch(err => logger.error(err));
 
         let seekTime = -1;
 
@@ -56,22 +56,22 @@ export default new SlashCommand({
     
             const timeSecs = ( (parseInt(hour) * 3600) || 0 ) + ( (parseInt(min) * 60) || 0 ) + (parseInt(sec));
             if (isNaN(timeSecs) || timeSecs < 0) return interaction.reply({ content: 'Nie potrafię rozczytać podani mi czas! Użyj formatu HH:MM:SS czyli np jak chcesz przewinąć do 8 minuty i 20 sekundy piosenki wpisz 8:20', ephemeral: true, })
-                .catch(err => logger.error(err));;  
+                .catch(err => logger.error(err));
     
             seekTime = timeSecs;
         } else {
             const time = parseInt(interaction.options.getString('chapter'));
 
             if (isNaN(time) || time < 0) return interaction.reply({ content: 'Nie można przewinąć do podanego chapteru', ephemeral: true, })
-                .catch(err => logger.error(err));;
+                .catch(err => logger.error(err));
             seekTime = time;
         }
 
         const queueNew = queue.seek(seekTime);
-        if (queue.paused) queue.paused = false;   // distube glitch bypass
+        if (queue.paused) queue.paused = false; // distube glitch bypass
 
         interaction.reply({ content: `Przewinięto do \`${formatTimeDisplay(queueNew.currentTime)}\`!` })
-            .catch(err => logger.error(err));;
+            .catch(err => logger.error(err));
     },
     getAutocompletes: async ({ interaction, logger }) => {
         const queue = distube.getQueue(interaction.guildId);

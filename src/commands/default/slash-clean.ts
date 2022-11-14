@@ -12,6 +12,6 @@ export default new SlashCommand({
     run: async ({ interaction, logger, queue }) => {
         queue.stop().catch(err => logger.error(err));
 
-        interaction.reply({ content: 'Wyczyszczono całą kolejkę!' }).catch(err => logger.error(err));;      
+        interaction.reply({ content: 'Wyczyszczono całą kolejkę!' }).catch(err => logger.error(err));    
     },
 });

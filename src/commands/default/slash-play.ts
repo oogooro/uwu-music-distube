@@ -40,15 +40,29 @@ export default new SlashCommand({
                 },
                 description: 'Czy przetasować piosenki po dodaniu',
             },
+            {
+                type: ApplicationCommandOptionType.String,
+                name: 'loop',
+                nameLocalizations: {
+                    pl: 'zapętlanie',
+                },
+                description: 'W jaki sposób zapętlać',
+                choices: [
+                    { name: '🔂 Piosenka', value: '1', },
+                    { name: '🔁 Kolejka', value: '2', },
+                    { name: '🚫 Wyłączone', value: '0', },
+                ],
+            },
         ],
         dmPermission: false,
-},
+    },
     vcOnly: true,
     run: async ({ interaction, logger }) => {
         const string = interaction.options.getString('song');
         const position = interaction.options.getBoolean('next') ? 1 : 0;
         const skip = interaction.options.getBoolean('skip');
         const shuffle = interaction.options.getBoolean('shuffle');
+        const loopMode = interaction.options.getString('loop');
 
         await interaction.deferReply().catch(err => logger.error(err));
 
@@ -61,16 +75,16 @@ export default new SlashCommand({
             position,
         })
         .then(() => {
+            const queue = distube.getQueue(interaction.guildId);
             if (skip) {
-                const queue = distube.getQueue(interaction.guildId);
                 if (!queue || !queue.songs[1]) return;
                 distube.skip(interaction.guildId);
             }
             if (shuffle) {
-                const queue = distube.getQueue(interaction.guildId);
                 if (!queue || !queue.songs[1]) return;
                 distube.shuffle(interaction.guildId);
             }
+            if (loopMode) queue.setRepeatMode(parseInt(loopMode));
         })
         .catch(err => {
             logger.error(err);

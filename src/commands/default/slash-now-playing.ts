@@ -4,7 +4,6 @@ import config from '../../config';
 import { formatTimeDisplay, generateCustomId, songToDisplayString, trimString } from '../../utils';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, SelectMenuBuilder } from 'discord.js';
 
-
 export default new SlashCommand({
     data: {
         name: 'now-playing',
@@ -15,7 +14,7 @@ export default new SlashCommand({
     run: async ({ interaction, logger, queue }) => {
         const [song] = queue?.songs;
         
-        if (!queue?.playing) return interaction.reply({ content: 'Aktualnie nic nie gra!' + song ? '' : 'Wskocz na kanał głosowy i użyj </play:2137>, aby rozkręcić imprezę!' }).catch(err => logger.error(err));;  
+        if (!queue?.playing) return interaction.reply({ content: 'Aktualnie nic nie gra!' + song ? '' : 'Wskocz na kanał głosowy i użyj </play:2137>, aby rozkręcić imprezę!' }).catch(err => logger.error(err));
 
         const PROGRESS_LENGHT: number = 40;
         const progress = Math.round(queue.currentTime / song.duration * PROGRESS_LENGHT);
@@ -120,6 +119,6 @@ export default new SlashCommand({
                     emoji: '🔍',
                 }],
             }],
-        }).catch(err => logger.error(err));;
+        }).catch(err => logger.error(err));
     },
 });

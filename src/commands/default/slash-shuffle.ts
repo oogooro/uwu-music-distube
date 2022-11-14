@@ -13,12 +13,12 @@ export default new SlashCommand({
         distube.shuffle(interaction.guildId)
             .then(() => {
                 interaction.reply({ content: ':twisted_rightwards_arrows: Przetasowano piosenki!' })
-                    .catch(err => logger.error(err));;  
+                    .catch(err => logger.error(err));
             })
             .catch(err => {
                 logger.error(err);
                 interaction.reply({ content: 'Nie udało się przetasować piosenek!', ephemeral: true, })
-                    .catch(err => logger.error(err));;  
+                    .catch(err => logger.error(err));
             });
     },
 });

@@ -17,7 +17,7 @@ export default new MessageCommand({
         if (!matched) matched = interaction.targetMessage.embeds[0]?.description?.match(ytLinkRe);
 
         if (!matched) return interaction.reply({ content: 'W tej wiadomości nie ma linków do YouTube', ephemeral: true, })
-            .catch(err => logger.error(err));;
+            .catch(err => logger.error(err));
 
         const [ link ] = matched;
 

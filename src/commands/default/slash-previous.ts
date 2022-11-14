@@ -16,15 +16,15 @@ export default new SlashCommand({
             .then(song => {
                 interaction.reply({ embeds: [{
                     title: 'Cofnięto piosenkę',
-                    description: `Cofnięto do ${songToDisplayString(song)}`,
+                    description: `Cofnięto do ${songToDisplayString(song, true)}`,
                     color: config.embedColor,
                 }], })
-                    .catch(err => logger.error(err));;  
+                    .catch(err => logger.error(err));
             })
             .catch(err => {
                 logger.error(err);
                 interaction.reply({ content: 'Nie udało się cofnąć piosenki', ephemeral: true, })
-                    .catch(err => logger.error(err));;  
+                    .catch(err => logger.error(err));
             });
 
     },
