@@ -14,8 +14,9 @@ export function generateInteractionTrace(interaction: Interaction): string {
     else if (interaction.type === InteractionType.MessageComponent || interaction.type === InteractionType.ModalSubmit) return `${place}/${interaction.user.id}/${interaction.customId}`;
 }
 
-export function songToDisplayString(song: Song): string {
-    return `[${song.name}](${song.url}) - \`${song.formattedDuration}\`\n(dodane przez <@${song.user.id}>)`;
+export function songToDisplayString(song: Song, short: boolean = false): string {
+    if (short) return `[${song.name}](${song.url})`;
+    else return `[${song.name}](${song.url}) - \`${song.formattedDuration}\`\n(dodane przez <@${song.user.id}>)`;
 }
 
 export function formatTimeDisplay(totalSeconds: number): string {
