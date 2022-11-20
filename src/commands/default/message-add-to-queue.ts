@@ -23,7 +23,13 @@ export default new MessageCommand({
 
         await interaction.deferReply().catch(err => logger.error(err));
 
-        distube.interactionShared.set(interaction.guildId, interaction);
+        let sharedInteractions = distube.interactionShared.get(interaction.guildId);
+
+        if (!sharedInteractions) sharedInteractions = [];
+
+        sharedInteractions.push({ interaction });
+
+        distube.interactionShared.set(interaction.guildId, sharedInteractions);
         distube.errorChannel.set(interaction.guildId, interaction.channel);
 
         const member = interaction.member as GuildMember;

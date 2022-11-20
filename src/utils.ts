@@ -15,8 +15,8 @@ export function generateInteractionTrace(interaction: Interaction): string {
 }
 
 export function songToDisplayString(song: Song, short: boolean = false): string {
-    if (short) return `[${song.name}](${song.url})`;
-    else return `[${song.name}](${song.url}) - \`${song.formattedDuration}\`\n(dodane przez <@${song.user.id}>)`;
+    if (short) return `[${song.name.replaceAll(/\[|\]|\(|\)/g, '')}](${song.url})`;
+    else return `[${song.name.replaceAll(/\[|\]|\(|\)/g, '')}](${song.url}) - \`${song.formattedDuration}\`\n(dodane przez <@${song.user.id}>)`;
 }
 
 export function formatTimeDisplay(totalSeconds: number): string {
