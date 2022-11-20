@@ -18,9 +18,8 @@ const config: Config = {
         partials: [Partials.Message],
     },
     distubeOptions: {
-        searchSongs: 0,
-        searchCooldown: 5,
-        leaveOnEmpty: false,
+        emptyCooldown: 300,
+        leaveOnEmpty: true,
         leaveOnFinish: false,
         leaveOnStop: false,
     },
