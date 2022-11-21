@@ -95,7 +95,7 @@ export default new SlashCommand({
     run: async ({ interaction, logger }) => {
         const songQuery = interaction.options.getString('song');
         
-        if (!songQuery.startsWith('https://www.youtube.com/watch?v') && !songQuery.startsWith('https://youtu.be/')) {
+        if (!songQuery.startsWith('https://www.youtube.com/') && !songQuery.startsWith('https://youtube.com/') && !songQuery.startsWith('https://youtu.be/')) {
             if (songQuery.startsWith('https://') || songQuery.startsWith('http://')) {
                 return interaction.reply({ content: 'Granie z zewnętrznych plików dźwiękowych jeszcze nie jest zaimplementowane!\nComming Soon™', ephemeral: true, })
                     .catch(err => logger.error(err));
