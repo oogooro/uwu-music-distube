@@ -8,6 +8,7 @@ interface Config {
     clientOptions: ClientOptions;
     distubeOptions: DisTubeOptions;
     loggerOptions: LoggerOptions;
+    debugLoggerOptions: LoggerOptions;
     embedColor: number;
 }
 
@@ -34,6 +35,13 @@ const config: Config = {
         transports: [
             `${__dirname}/../logs/${moment(new Date()).format('D-M-YY-HH-mm-ss')}-${process.env.ENV}.log`,
             `${__dirname}/../logs/latest-${process.env.ENV}.log`,
+        ],
+        debugMode: process.env.DEBUG_MODE === '1',
+    },
+    debugLoggerOptions: {
+        transports: [
+            `${__dirname}/../logs/debug/${moment(new Date()).format('D-M-YY-HH-mm-ss')}-debug-${process.env.ENV}.log`,
+            `${__dirname}/../logs/debug/latest-debug-${process.env.ENV}.log`,
         ],
         debugMode: process.env.DEBUG_MODE === '1',
     },

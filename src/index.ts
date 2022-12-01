@@ -7,6 +7,7 @@ dotenv.config();
 
 export const logger = new Logger(config.loggerOptions);
 export const client = new ExtendedClient(config.clientOptions);
+export const debugLogger = new Logger(config.debugLoggerOptions);
 export const distube = new ExtendedDistube(config.distubeOptions);
 
 if (!process.env.ENV) {

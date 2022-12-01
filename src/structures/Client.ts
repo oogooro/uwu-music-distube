@@ -1,4 +1,4 @@
-import { ApplicationCommandDataResolvable, Client, ClientEvents, ClientOptions, Collection } from 'discord.js';
+import { ApplicationCommandDataResolvable, Client, ClientEvents, ClientOptions, Collection, RestEvents } from 'discord.js';
 import glob from 'glob';
 import { promisify } from 'node:util';
 import { BotCommand, CommandCategoryManifest, CommandManager } from '../typings/commandManager';
@@ -7,6 +7,7 @@ import { logger } from '..';
 import { Agent } from 'undici';
 import { AutomatedInteractionType } from '../typings/automatedInteraction';
 import { botSettingsDB } from '../database/botSettings';
+import { DjsRestEvent } from './DjsRestEvent';
 
 const globPromise = promisify(glob);
 
@@ -150,6 +151,22 @@ export class ExtendedClient extends Client {
             if (!event?.name) return;
             if (event.runOnce) this.once(event.name, event.run);
             else this.on(event.name, event.run);
+        });
+
+        const djsRestEventFiles: string[] = await globPromise(`${__dirname}/../events/discord.js-Rest/*{.ts,.js}`.replace(/\\/g, '/'));
+
+        logger.log({
+            level: 'init',
+            message: `Found ${djsRestEventFiles.length} Discord.js Rest event files`,
+            color: 'blueBright',
+        });
+
+        djsRestEventFiles.forEach(async (eventPath: string) => {
+            const event: DjsRestEvent<keyof RestEvents> = await this.importFile(eventPath);
+
+            if (!event?.name) return;
+            if (event.runOnce) this.rest.once(event.name, event.run);
+            else this.rest.on(event.name, event.run);
         });
 
         const automatedInteractionFiles: string[] = await globPromise(`${__dirname}/../automated/*{.ts,.js}`.replace(/\\/g, '/'));
