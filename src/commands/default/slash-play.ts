@@ -183,11 +183,11 @@ export default new SlashCommand({
             }
 
             interactionResponse.awaitMessageComponent({ componentType: ComponentType.Button, filter: awaitFilter, time: 60000 /* 1min */ })
-                .then(btnInteraction => {
+                .then(async btnInteraction => {
                     if (btnInteraction.customId === 'CANCEL') return interaction.deleteReply().catch(err => logger.error(err));
 
                     const selectedSong = videos[parseInt(btnInteraction.customId) - 1];
-                    btnInteraction.deferUpdate()
+                    await btnInteraction.deferUpdate()
                         .catch(err => logger.error(err));
                     play(interaction, selectedSong.url, logger, btnInteraction);
                 })
