@@ -2,7 +2,7 @@ import { client, distube } from '../..';
 import { SlashCommand } from '../../structures/SlashCommand';
 import config from '../../config';
 import { formatTimeDisplay, generateCustomId, songToDisplayString, trimString } from '../../utils';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, SelectMenuBuilder } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, StringSelectMenuBuilder } from 'discord.js';
 
 export default new SlashCommand({
     data: {
@@ -82,16 +82,16 @@ export default new SlashCommand({
         collecor.once('end', async () => {
             const message = await interaction.fetchReply();
 
-            const disabledRows = message.components.reduce((a: ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[], row) => {
-                const components = row.toJSON().components.reduce((a: (ButtonBuilder | SelectMenuBuilder)[], component) => {
-                    let builder: (ButtonBuilder | SelectMenuBuilder) = (component.type === ComponentType.Button) ? ButtonBuilder.from(component) : SelectMenuBuilder.from(component);
+            const disabledRows = message.components.reduce((a: ActionRowBuilder<ButtonBuilder | StringSelectMenuBuilder>[], row) => {
+                const components = row.toJSON().components.reduce((a: (ButtonBuilder | StringSelectMenuBuilder)[], component) => {
+                    let builder: (ButtonBuilder | StringSelectMenuBuilder) = (component.type === ComponentType.Button) ? ButtonBuilder.from(component) : StringSelectMenuBuilder.from(component);
                     builder.setDisabled(true);
                     a.push(builder);
                     return a;
                 }, []);
                 const disabledRow = (components[0].data.type === ComponentType.Button) ?
                     new ActionRowBuilder<ButtonBuilder>().addComponents(components as ButtonBuilder[]) :
-                    new ActionRowBuilder<SelectMenuBuilder>().addComponents(components as SelectMenuBuilder[]);
+                    new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(components as StringSelectMenuBuilder[]);
                 a.push(disabledRow);
                 return a;
             }, []);
