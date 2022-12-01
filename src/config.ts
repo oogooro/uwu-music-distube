@@ -2,6 +2,7 @@ import { ClientOptions, IntentsBitField, Partials } from 'discord.js';
 import { LoggerOptions } from 'log4uwu';
 import { DisTubeOptions } from 'distube';
 import moment from 'moment';
+import { botSettingsDB } from './database/botSettings';
 
 interface Config {
     clientOptions: ClientOptions;
@@ -12,10 +13,16 @@ interface Config {
 
 const intentFlags = IntentsBitField.Flags;
 
+const botSettings = botSettingsDB.get(process.env.ENV);
+
 const config: Config = {
     clientOptions: {
         intents: [intentFlags.Guilds, intentFlags.GuildVoiceStates, intentFlags.GuildMessages],
         partials: [Partials.Message],
+        presence: {
+            activities: botSettings.status.visible ? botSettings.status.data : [],
+            status: botSettings.online ? 'online' : 'idle',
+        }
     },
     distubeOptions: {
         emptyCooldown: 300,

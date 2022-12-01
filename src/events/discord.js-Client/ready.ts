@@ -14,8 +14,6 @@ export default new DjsClientEvent('ready', async () => {
         color: online ? 'green' : 'magentaBright',
     });
 
-    client.updatePresence();
-
     logger.log({
         level: 'init',
         message: `Bot is ready, logged as ${client.user.tag}`,
