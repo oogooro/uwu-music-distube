@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, InteractionReplyOptions, InteractionUpdateOptions, MessageActionRowComponent, SelectMenuBuilder } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, InteractionReplyOptions, InteractionUpdateOptions, MessageActionRowComponent, StringSelectMenuBuilder } from 'discord.js';
 import { RepeatMode } from 'distube';
 import { client, distube } from '../..';
 import { SlashCommand } from '../../structures/SlashCommand';
@@ -20,6 +20,8 @@ export default new SlashCommand({
             prev: generateCustomId('prev', interaction),
             first: generateCustomId('first', interaction),
             last: generateCustomId('last', interaction),
+            exit: generateCustomId('exit', interaction),
+            refresh: generateCustomId('refresh', interaction),
         }
 
         const update = (btnInteraction?: ButtonInteraction) => {
@@ -93,14 +95,14 @@ export default new SlashCommand({
                             {
                                 type: ComponentType.Button,
                                 customId: customIds.first,
-                                label: '⇤',
+                                emoji: ':firstarrow:1047248854707347486',
                                 style: ButtonStyle.Secondary,
                                 disabled: page <= 0,
                             },
                             {
                                 type: ComponentType.Button,
                                 customId: customIds.prev,
-                                label: '←',
+                                emoji: ':leftarrow:1047248861095268402',
                                 style: ButtonStyle.Secondary,
                                 disabled: page <= 0,
                             },
@@ -114,16 +116,33 @@ export default new SlashCommand({
                             {
                                 type: ComponentType.Button,
                                 customId: customIds.next,
-                                label: '→',
+                                emoji: ':rightarrow:1047248866627555378',
                                 style: ButtonStyle.Secondary,
                                 disabled: page >= pages - 1,
                             },
                             {
                                 type: ComponentType.Button,
                                 customId: customIds.last,
-                                label: '⇥',
+                                emoji: ':lastarrow:1047248856913551370',
                                 style: ButtonStyle.Secondary,
                                 disabled: page >= pages - 1,
+                            },
+                        ],
+                    },
+                    {
+                        type: ComponentType.ActionRow,
+                        components: [
+                            {
+                                type: ComponentType.Button,
+                                customId: customIds.exit,
+				                label: 'Wyjście',
+                                style: ButtonStyle.Danger
+                            },
+                            {
+                                type: ComponentType.Button,
+                                customId: customIds.refresh,
+                                emoji: ':refresharrow:1047248864429756438',
+                                style: ButtonStyle.Secondary
                             },
                         ],
                     },
@@ -140,28 +159,30 @@ export default new SlashCommand({
         const collector = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.Button, idle: 300_000 /*6 min*/ });
 
         collector.on('collect', btnInteraction => {
-            if (btnInteraction.customId === customIds.next) page++;
-            else if (btnInteraction.customId === customIds.prev) page--;
-            else if (btnInteraction.customId === customIds.first) page=0;
-            else if (btnInteraction.customId === customIds.last) page = -1;
-            else return;
+            if (btnInteraction.customId === customIds.exit) btnInteraction.message.delete().catch(err => logger.error(err))
+            else {
+                if (btnInteraction.customId === customIds.next) page ++;
+                else if (btnInteraction.customId === customIds.prev) page --;
+                else if (btnInteraction.customId === customIds.first) page = 0;
+                else if (btnInteraction.customId === customIds.last) page = -1;
 
-            update(btnInteraction);
+                update(btnInteraction);
+            }
         });
 
         collector.once('end', async () => {
             const message = await interaction.fetchReply();
 
-            const disabledRows = message.components.reduce((a: ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[], row) => {
-                const components = row.toJSON().components.reduce((a: (ButtonBuilder | SelectMenuBuilder)[], component) => {
-                    let builder: (ButtonBuilder | SelectMenuBuilder) = (component.type === ComponentType.Button) ? ButtonBuilder.from(component) : SelectMenuBuilder.from(component);
+            const disabledRows = message.components.reduce((a: ActionRowBuilder<ButtonBuilder | StringSelectMenuBuilder>[], row) => {
+                const components = row.toJSON().components.reduce((a: (ButtonBuilder | StringSelectMenuBuilder)[], component) => {
+                    let builder: (ButtonBuilder | StringSelectMenuBuilder) = (component.type === ComponentType.Button) ? ButtonBuilder.from(component) : StringSelectMenuBuilder.from(component);
                     builder.setDisabled(true);
                     a.push(builder);
                     return a;
                 }, []);
                 const disabledRow = (components[0].data.type === ComponentType.Button) ?
                     new ActionRowBuilder<ButtonBuilder>().addComponents(components as ButtonBuilder[]) :
-                    new ActionRowBuilder<SelectMenuBuilder>().addComponents(components as SelectMenuBuilder[]);
+                    new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(components as StringSelectMenuBuilder[]);
                 a.push(disabledRow);
                 return a;
             }, []);
