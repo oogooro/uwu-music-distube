@@ -1,9 +1,9 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, InteractionReplyOptions, InteractionUpdateOptions, MessageActionRowComponent, StringSelectMenuBuilder } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, InteractionReplyOptions, InteractionUpdateOptions, StringSelectMenuBuilder } from 'discord.js';
 import { RepeatMode } from 'distube';
 import { client, distube } from '../..';
 import { SlashCommand } from '../../structures/SlashCommand';
 import config from '../../config';
-import { generateCustomId, songToDisplayString } from '../../utils';
+import { songToDisplayString } from '../../utils';
 
 export default new SlashCommand({
     data: {
@@ -13,16 +13,9 @@ export default new SlashCommand({
     },
     queueRequired: true,
     run: async ({ interaction, logger, queue }) => {
-        let page = 0;
+        const interactionResponse = await interaction.deferReply();
         
-        const customIds = {
-            next: generateCustomId('next', interaction),
-            prev: generateCustomId('prev', interaction),
-            first: generateCustomId('first', interaction),
-            last: generateCustomId('last', interaction),
-            exit: generateCustomId('exit', interaction),
-            refresh: generateCustomId('refresh', interaction),
-        }
+        let page = 0;
 
         const update = (btnInteraction?: ButtonInteraction) => {
             const queue = distube.getQueue(interaction.guildId);
@@ -94,14 +87,14 @@ export default new SlashCommand({
                         components: [
                             {
                                 type: ComponentType.Button,
-                                customId: customIds.first,
+                                customId: 'FIRST',
                                 emoji: ':firstarrow:1047248854707347486',
                                 style: ButtonStyle.Secondary,
                                 disabled: page <= 0,
                             },
                             {
                                 type: ComponentType.Button,
-                                customId: customIds.prev,
+                                customId: 'PREVIOUS',
                                 emoji: ':leftarrow:1047248861095268402',
                                 style: ButtonStyle.Secondary,
                                 disabled: page <= 0,
@@ -115,14 +108,14 @@ export default new SlashCommand({
                             },
                             {
                                 type: ComponentType.Button,
-                                customId: customIds.next,
+                                customId: 'NEXT',
                                 emoji: ':rightarrow:1047248866627555378',
                                 style: ButtonStyle.Secondary,
                                 disabled: page >= pages - 1,
                             },
                             {
                                 type: ComponentType.Button,
-                                customId: customIds.last,
+                                customId: 'LAST',
                                 emoji: ':lastarrow:1047248856913551370',
                                 style: ButtonStyle.Secondary,
                                 disabled: page >= pages - 1,
@@ -134,13 +127,14 @@ export default new SlashCommand({
                         components: [
                             {
                                 type: ComponentType.Button,
-                                customId: customIds.exit,
+                                customId: 'EXIT',
 				                label: 'Wyjście',
                                 style: ButtonStyle.Danger
                             },
                             {
                                 type: ComponentType.Button,
-                                customId: customIds.refresh,
+                                customId: 'REFRESH',
+                                label: 'Odśwież',
                                 emoji: ':refresharrow:1047248864429756438',
                                 style: ButtonStyle.Secondary
                             },
@@ -149,29 +143,37 @@ export default new SlashCommand({
                 ],
             }
 
-            if (!btnInteraction) interaction.reply(content as InteractionReplyOptions)
+            if (!btnInteraction) interaction.editReply(content as InteractionReplyOptions)
                 .catch(err => logger.error(err));
             else btnInteraction.update(content as InteractionUpdateOptions)
                 .catch(err => logger.error(err));
         }
         update();
 
-        const collector = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.Button, idle: 300_000 /*6 min*/ });
+        const collector = interactionResponse.createMessageComponentCollector({ componentType: ComponentType.Button, idle: 300_000 /*5 min*/ });
 
         collector.on('collect', btnInteraction => {
-            if (btnInteraction.customId === customIds.exit) btnInteraction.message.delete().catch(err => logger.error(err))
+            if (btnInteraction.customId === 'EXIT') {
+                if (btnInteraction.user.id !== interaction.user.id)
+                    btnInteraction.reply({ content: 'Ten przycisk nie jest dla ciebie!', ephemeral: true }).catch(err => logger.error(err));
+                else
+                    interaction.deleteReply().catch(err => logger.error(err));
+            }
             else {
-                if (btnInteraction.customId === customIds.next) page ++;
-                else if (btnInteraction.customId === customIds.prev) page --;
-                else if (btnInteraction.customId === customIds.first) page = 0;
-                else if (btnInteraction.customId === customIds.last) page = -1;
+                if (btnInteraction.customId === 'NEXT') page ++;
+                else if (btnInteraction.customId === 'PREVIOUS') page --;
+                else if (btnInteraction.customId === 'FIRST') page = 0;
+                else if (btnInteraction.customId === 'LAST') page = -1;
 
                 update(btnInteraction);
             }
         });
 
-        collector.once('end', async () => {
-            const message = await interaction.fetchReply();
+        collector.once('end', async (_collected, reason) => {
+            if (reason === 'messageDelete') return;
+
+            const message = await interaction.fetchReply().catch(err => logger.error(err));
+            if (typeof message === 'string') return;
 
             const disabledRows = message.components.reduce((a: ActionRowBuilder<ButtonBuilder | StringSelectMenuBuilder>[], row) => {
                 const components = row.toJSON().components.reduce((a: (ButtonBuilder | StringSelectMenuBuilder)[], component) => {
