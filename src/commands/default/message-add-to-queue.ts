@@ -60,7 +60,7 @@ export default new MessageCommand({
                 description: content,
             }
 
-            return interaction.editReply({ embeds: [embed], })
+            return interaction.editReply({ embeds: [embed], components: [], })
                 .catch(err => logger.error(err));
         });
     },

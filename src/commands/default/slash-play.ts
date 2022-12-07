@@ -38,7 +38,7 @@ const play = (interaction: ChatInputCommandInteraction, songUrl: string, logger:
             description: content,
         }
 
-        return interaction.editReply({ embeds: [embed], })
+        return interaction.editReply({ embeds: [embed], components: [], })
             .catch(err => logger.error(err));
     });
 }
