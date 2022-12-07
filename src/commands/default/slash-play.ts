@@ -139,7 +139,7 @@ export default new SlashCommand({
 
             let description = ``;
             videos.forEach((item: Video, index) => {
-                description += `${index + 1} ${hyperlink(escapeMarkdown(trimString(item.title, 55).replaceAll(/\[|\]|\(|\)/g, '')), item.url, item.title.length >= 55 ? escapeMarkdown(item.title) : null)} - \`${item.duration}\`\n- ${escapeMarkdown(item.author.name)}\n\n`;
+                description += `${index + 1} ${hyperlink(escapeMarkdown(trimString(item.title, 55)), item.url, item.title.length >= 55 ? escapeMarkdown(item.title) : null)} - \`${item.duration ? item.duration : 'LIVE'}\`\n- ${escapeMarkdown(item.author.name)}\n\n`;
             });
 
             const replyContent = {

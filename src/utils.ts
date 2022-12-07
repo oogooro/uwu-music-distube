@@ -1,4 +1,4 @@
-import { CommandInteraction, Interaction, InteractionType } from 'discord.js';
+import { CommandInteraction, escapeMarkdown, hyperlink, Interaction, InteractionType } from 'discord.js';
 import { Song } from 'distube';
 
 let customIdIncrement = 0;
@@ -15,8 +15,10 @@ export function generateInteractionTrace(interaction: Interaction): string {
 }
 
 export function songToDisplayString(song: Song, short: boolean = false): string {
-    if (short) return `[${song.name.replaceAll(/\[|\]|\(|\)/g, '')}](${song.url})`;
-    else return `[${song.name.replaceAll(/\[|\]|\(|\)/g, '')}](${song.url}) - \`${song.formattedDuration}\`\n(dodane przez <@${song.user.id}>)`;
+    let displayString = `${hyperlink(escapeMarkdown(trimString(song.name, 55)), song.url, song.name.length >= 55 ? escapeMarkdown(song.name) : null)}`;
+
+    if (short) return displayString;
+    else return `${displayString} - \`${song.formattedDuration}\`\n(dodane przez <@${song.user.id}>)`;
 }
 
 export function formatTimeDisplay(totalSeconds: number): string {
