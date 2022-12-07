@@ -15,7 +15,6 @@ const play = (interaction: ChatInputCommandInteraction, songUrl: string, logger:
     sharedInteractions.push({ interaction, buttonInteraction });
 
     distube.interactionShared.set(interaction.guildId, sharedInteractions);
-    distube.errorChannel.set(interaction.guildId, interaction.channel);
 
     const member = interaction.member as GuildMember;
     distube.play(member.voice.channel, songUrl, {
@@ -24,7 +23,14 @@ const play = (interaction: ChatInputCommandInteraction, songUrl: string, logger:
     }).catch(err => {
         logger.error(err);
 
-        const content = err.message.toLowerCase().includes('nsfw') ? 'Nie udało się dodać piosenki, bo Youtube nie pozwala odtwarzać piosenek 18+ bez zalogowania się' : 'Coś poszło nie tak i nie można zagrać muzyki ||(skill issue distube)||';
+        let sharedInteractions = distube.interactionShared.get(interaction.guildId);
+
+        if (sharedInteractions) {
+            sharedInteractions.pop();
+            distube.interactionShared.set(interaction.guildId, sharedInteractions);
+        }
+        
+        const content = err.message.toLowerCase().includes('nsfw') ? 'Nie udało się dodać piosenki, bo Youtube nie pozwala odtwarzać piosenek 18+ bez zalogowania się' : 'Coś poszło nie tak i nie można zagrać muzyki';
 
         const embed: APIEmbed = {
             title: 'Wystąpił błąd!',
@@ -94,6 +100,14 @@ export default new SlashCommand({
     vcOnly: true,
     run: async ({ interaction, logger }) => {
         const songQuery = interaction.options.getString('song');
+
+        const member = interaction.member as GuildMember;
+        const channel = member.voice?.channel;
+
+        if (!channel.joinable) return interaction.reply({ content: 'Nie mam uprawnień, aby dołączyć na kanał, na którym jesteś!' })
+            .catch(err => logger.error(err));
+        if (!channel) return interaction.reply({ content: 'Nie mam uprawnień, aby mówić na kanale, na którym jesteś!' })
+            .catch(err => logger.error(err));
         
         if (!songQuery.startsWith('https://www.youtube.com/') && !songQuery.startsWith('https://youtube.com/') && !songQuery.startsWith('https://youtu.be/')) {
             if (songQuery.startsWith('https://') || songQuery.startsWith('http://')) {
