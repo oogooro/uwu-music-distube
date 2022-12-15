@@ -9,7 +9,7 @@ DISCORDBOT_DEV_TOKEN = ""
 BOT_GUILD_ID = ""
 PORT = ""
 ```
-Tam gdzie jest `DISCORDBOT_TOKEN` i `DISCORDBOT_DEV_TOKEN` dajesz token bota. `DEV_TOKEN` jest do developmentu. Jeśli development Cię to nie interesuje to rób z tym co chcesz.
+Tam gdzie jest `DISCORDBOT_TOKEN` i `DISCORDBOT_DEV_TOKEN` dajesz token bota. `DISCORDBOT_DEV_TOKEN` jest do developmentu. Jeśli development Cię to nie interesuje to rób z tym co chcesz.
 `BOT_GUILD_ID` dajesz id serwera do developmentu bota do rejestrowania komend developerskich. W `PORT` dajesz numerek na jaki ma działać serwer (zalecany numer większy niż 3000 i mniejszy niż 99999).
 Jeśli uzupełnione to świetnie! Teraz możesz zbudować bota komendą `npm run build` **UŻYWASZ JĄ TYLKO RAZ**. Póżniej włączasz już bota wpisująć `npm run deploy`. Bot powienien już być online jeśli nei ma jakiś błędów. Teraz musisz wejść na stonę http://localhost:XXXX **ZAMIAST *XXXX* DAJESZ NUMER JAKI DAŁEŚ W `PORT` W `.env`**, klikasz w manage i przycisk `zarejestruj globalne komendy` (musisz to zrobić tylko raz).
 Bot powiennien być już gotowy i grać śmiało
