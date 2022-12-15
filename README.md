@@ -1,5 +1,5 @@
 # UwU muzyczny grajek
-Nie mam jak go hostować 24/7 więc jakby ktoś chciał to proszę bardzo tutaj jest kod. Potrzebujesz do tego podstawową wiedzę to tworzenia botów, nodejs >16.9, dobry internet i odrobinę wolnego czasu. 
+Nie mam jak go hostować 24/7 więc jakby ktoś chciał to proszę bardzo tutaj jest kod. Potrzebujesz do tego podstawową wiedzę o tworzeniu botów discordowych, nodejs >16.9, dobry internet i odrobinę wolnego czasu. 
 
 ## Szybka bezsensowna instrukcja:
 Jeśli używasz windowsa na początku prawdopodobnie musisz pobrać wymagane rzeczy, aby baza danych jaką używam do tego projektu działała. [Kliknij tu po instrukcję](https://enmap.evie.dev/install/#pre-requisites). Zrób wszystko pod **Pre-Requisites**. Następnie musisz pobrać FFMPEG i dodać go do ścieżki. Po probraniu wpisujesz `npm i` aby zainstalować moduły. Świetnie, teraz stwórz plik tekstowy `.env` i uzupełnij go następująco według schematu:
