@@ -10,7 +10,7 @@ export interface BotSettings {
     devs: string[];
 }
 
-export const botSettingsDB: Enmap<BotSettings> = new Enmap({ name: 'botSettings', });
+export const botSettingsDB: Enmap<string, BotSettings> = new Enmap({ name: 'botSettings', });
 
 if (!botSettingsDB.get(process.env.ENV)) {
     botSettingsDB.set(process.env.ENV, {
