@@ -33,7 +33,17 @@ export default new DjsClientEvent('interactionCreate', async interaction => {
             }
             
             if (command.queueRequired && (!queue || !queue?.songs[0])) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => loggerThread.error(err));
-            if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true });
+            if (command.vcOnly) {
+                if (!member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true }).catch(err => loggerThread.error(err));
+
+                const voiceChannel = member.voice.channel;
+                if (!member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true })
+                    .catch(err => loggerThread.error(err));
+                if (!voiceChannel.joinable) return interaction.reply({ content: 'Nie mam uprawnień, aby dołączyć na kanał, na którym jesteś!' })
+                    .catch(err => logger.error(err));
+                if (!voiceChannel) return interaction.reply({ content: 'Nie mam uprawnień, aby mówić na kanale, na którym jesteś!' })
+                    .catch(err => logger.error(err));
+            }
 
             loggerThread.debug(`Executing command: ${interaction.commandName}`);
             command.run({ interaction, logger: loggerThread, queue })
@@ -48,8 +58,18 @@ export default new DjsClientEvent('interactionCreate', async interaction => {
             if (!command) return interaction.reply({ content: `tej komendy już nie ma nie używaj jej pls`, ephemeral: true }).catch(err => loggerThread.error(err));
 
             if (command.queueRequired && (!queue || !queue?.songs[0])) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => loggerThread.error(err));
-            if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true }).catch(err => loggerThread.error(err));
+            if (command.vcOnly) {
+                if (!member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true }).catch(err => loggerThread.error(err));
 
+                const voiceChannel = member.voice.channel;
+                if (!member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true })
+                    .catch(err => loggerThread.error(err));
+                if (!voiceChannel.joinable) return interaction.reply({ content: 'Nie mam uprawnień, aby dołączyć na kanał, na którym jesteś!' })
+                    .catch(err => logger.error(err));
+                if (!voiceChannel) return interaction.reply({ content: 'Nie mam uprawnień, aby mówić na kanale, na którym jesteś!' })
+                    .catch(err => logger.error(err));
+            }
+            
             loggerThread.debug(`Executing command: ${interaction.commandName}`);
             command.run({ interaction, logger: loggerThread, queue, })
                 .catch(err => loggerThread.error(err))
@@ -63,7 +83,17 @@ export default new DjsClientEvent('interactionCreate', async interaction => {
             if (!command) return interaction.reply({ content: `tej komendy już nie ma nie używaj jej pls`, ephemeral: true }).catch(err => loggerThread.error(err));
             
             if (command.queueRequired && (!queue || !queue?.songs[0])) return interaction.reply({ content: 'Kolejka nie istnieje!', ephemeral: true, }).catch(err => loggerThread.error(err));
-            if (command.vcOnly && !member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true }).catch(err => loggerThread.error(err));
+            if (command.vcOnly) {
+                if (!member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true }).catch(err => loggerThread.error(err));
+                
+                const voiceChannel = member.voice.channel;
+                if (!member.voice.channel) return interaction.reply({ content: `Musisz być na kanale głosowym, aby użyć tej komendy`, ephemeral: true })
+                    .catch(err => loggerThread.error(err));
+                if (!voiceChannel.joinable) return interaction.reply({ content: 'Nie mam uprawnień, aby dołączyć na kanał, na którym jesteś!' })
+                    .catch(err => logger.error(err));
+                if (!voiceChannel) return interaction.reply({ content: 'Nie mam uprawnień, aby mówić na kanale, na którym jesteś!' })
+                    .catch(err => logger.error(err));
+            }
 
             loggerThread.debug(`Executing command: ${interaction.commandName}`);
             command.run({ interaction, logger: loggerThread, queue })
