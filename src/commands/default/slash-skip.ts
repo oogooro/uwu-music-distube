@@ -2,7 +2,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { RepeatMode } from 'distube';
 import { client, distube } from '../..';
 import { SlashCommand } from '../../structures/SlashCommand';
-import { songToDisplayString } from '../../utils';
 
 export default new SlashCommand({
     data: {
@@ -16,6 +15,7 @@ export default new SlashCommand({
                     pl: 'do',
                 },
                 description: 'Numer do jakiej piosenki pominąć',
+                minValue: 1,
             },
         ],
         dmPermission: false,
@@ -56,7 +56,7 @@ export default new SlashCommand({
             if (queue.repeatMode === RepeatMode.QUEUE) queue.songs = queue.songs.concat(queue.songs.slice(0, num - 1));
 
             distube.jump(interaction.guildId, num).then((song) => {
-                interaction.reply({ content: `:track_next: Pominięto do ${songToDisplayString(song, true)}`, })
+                interaction.reply({ content: `:track_next: Pominięto **${num}** piosenek`, })
                     .catch(err => logger.error(err));
             })
             .catch(err => {
