@@ -126,8 +126,8 @@ const pageContents = {
 `,
     manage: `
     <p class="bold">Przyciski:</p>
-    <p><input type="button" id="btnRegisterGlobal" value="Zajerestruj globalne komendy"></p>
-    <p><input type="button" id="btnRegisterGuild" value="Zajerestruj komendy dla głównego serwera"></p>
+    <p><input type="button" id="btnRegisterGlobal" value="Zarejestruj globalne komendy"></p>
+    <p><input type="button" id="btnRegisterGuild" value="Zarejestruj komendy dla głównego serwera"></p>
     <p class="bold">Ustawienia:</p>
     <p><label for="online-mode">Online</label> <input type="checkbox" name="online-mode" id="online-mode"></p>
     <p>
