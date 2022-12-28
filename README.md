@@ -63,5 +63,5 @@ Po tym bot powinien już żyć
 1. W SCOPES klikasz `bot`
 1. Na dole kopiujesz `GENERATED URL` i wklejasz w przeglądarkę
 
-### Po Tym wszystkim bot powinien być już zdatny do użytku
+### Po tym wszystkim bot powinien być już zdatny do użytku
 Bota uruchamiasz wpisująć `npm run deploy` resztę punktów nie trzeba powtarzać
