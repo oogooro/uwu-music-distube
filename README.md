@@ -25,7 +25,7 @@ DISCORDBOT_DEV_TOKEN = ""
 BOT_GUILD_ID = ""
 PORT = "4401"
 ```
-- `DISCORDBOT_TOKEN` dajesz swój token bota **tylko to jest konieczne**
+- `DISCORDBOT_TOKEN` dajesz swój token bota (***tylko to jest konieczne***)
 - `DISCORDBOT_DEV_TOKEN` token bota do rozwoju aplikacji, możesz zostawić puste lub dać innego bota testowego
 - `BOT_GUILD_ID` ID serwera testowego bota do developmentu
 - `PORT` port serwera bota
@@ -35,20 +35,20 @@ PORT = "4401"
 1. Klikasz niebieski przycisk New Application i stwórz aplikację
 1. Na lewo klikasz Bot
 1. Niebieki przycisk Add Bot -> Yes, do it!
-1. Niebieski przycisk Reset Token <br /> <br />
-Gratulację dostałeś token bota! Skopiuj go!
+1. Niebieski przycisk Reset Token
+#### Gratulację dostałeś token bota! Skopiuj go!
 
 ### Instalowanie modułów, kompilacja i uruchamianie
 1. Wchodzisz w konsoli ***uruchomionej jako administrator*** w ścieżkę bota (na poziom, na którym widzisz package.json)
 1. Wpisujesz `npm i -g --add-python-to-path --vs2015 --production windows-build-tools` (linuksiarze `sudo apt-get install build-essential`) (to może zająć długi czas)
 1. Następnie `npm i -g node-gyp@latest`
 1. Wpisujesz `npm i`
-1. Jeśli nie masz FFMPEG to wpisujesz `npm i ffmpeg-static` <br /> <br />
-Kompilacja:
-- `npm run build` <br /> <br />
-Uruchamianie:
-- `npm run deploy` <br /> <br />
-Po tym bot powinien już żyć
+1. Jeśli nie masz FFMPEG to wpisujesz `npm i ffmpeg-static`
+#### Kompilacja:
+- `npm run build`
+#### Uruchamianie:
+- `npm run deploy`
+#### Po tym bot powinien już żyć
 
 ### Dodawanie komend
 1. Wchodzisz w przeglądarce na http://localhost:4401
