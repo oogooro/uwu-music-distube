@@ -9,8 +9,8 @@ Tego bota uważam za skończonego, mimo że wcześniej planowałem jeszcze więc
 ### Potrzebne rzeczy:
 - [Node.js](https://nodejs.org) LTS
 - NPM (przychodzi razem z Node.js)
-- [FFMPEG](https://ffmpeg.org/download.html) dodany do ścieżki (ewentualnie `ffmpeg-static` instalowany `npm i ffmpeg-static`) <br />
-- [Git](https://gitforwindows.org) do pobierania aktualizacji kodu bota (opcionalne)
+- [FFMPEG](https://ffmpeg.org/download.html) dodany do ścieżki (opcionalne, ale zalecane) <br />
+- [Git](https://gitforwindows.org) do pobierania aktualizacji kodu bota (opcionalne, ale zalecane)
 
 ### Pobieranie kodu bota
 Jeśli masz Git to użyj `git clone https://github.com/oogooro/uwu-music-distube` <br />
