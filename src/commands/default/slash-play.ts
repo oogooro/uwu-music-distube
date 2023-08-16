@@ -1,4 +1,4 @@
-import { APIEmbed, ApplicationCommandOptionType, ButtonInteraction, ButtonStyle, ChatInputCommandInteraction, ComponentType, escapeMarkdown, GuildMember, hyperlink, WebhookEditMessageOptions } from 'discord.js';
+import { APIEmbed, ApplicationCommandOptionType, ButtonInteraction, ButtonStyle, ChatInputCommandInteraction, ComponentType, escapeMarkdown, GuildMember, hyperlink } from 'discord.js';
 import ytsr, { Result, Video } from 'ytsr';
 import { SlashCommand } from '../../structures/SlashCommand';
 import { client, distube } from '../..';

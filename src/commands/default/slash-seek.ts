@@ -55,7 +55,7 @@ export default new SlashCommand({
             const [ sec, min, hour ] = time.split(':').reverse();
     
             const timeSecs = ( (parseInt(hour) * 3600) || 0 ) + ( (parseInt(min) * 60) || 0 ) + (parseInt(sec));
-            if (isNaN(timeSecs) || timeSecs < 0) return interaction.reply({ content: 'Nie potrafię rozczytać podani mi czas! Użyj formatu HH:MM:SS czyli np jak chcesz przewinąć do 8 minuty i 20 sekundy piosenki wpisz 8:20', ephemeral: true, })
+            if (isNaN(timeSecs) || timeSecs < 0) return interaction.reply({ content: 'Użyj formatu HH:MM:SS czyli np jak chcesz przewinąć do 8 minuty i 20 sekundy piosenki wpisz 8:20', ephemeral: true, })
                 .catch(err => logger.error(err));
     
             seekTime = timeSecs;
